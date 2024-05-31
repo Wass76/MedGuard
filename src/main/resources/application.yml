@@ -3,9 +3,9 @@ server:
 
 spring:
   application:
-    name: AbstractProject
+    name: CareemSystem
   datasource:
-    url: jdbc:postgresql://localhost:5435/abstractproject
+    url: jdbc:postgresql://localhost:5333/careemsystem
     username: Wassem
     password: password
     driver-class-name: org.postgresql.Driver
