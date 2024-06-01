@@ -1,5 +1,7 @@
-package com.CareemSystem.user;
+package com.CareemSystem.user.Controller;
 
+import com.CareemSystem.user.Request.ChangePasswordRequest;
+import com.CareemSystem.user.Service.BaseUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,9 +18,9 @@ import java.security.Principal;
 @RequestMapping("api/v1/users")
 @RequiredArgsConstructor
 @Tag(name = "User Account Management")
-public class UserController {
+public class BaseUserController {
 
-    private final UserService userService;
+    private final BaseUserService baseUserService;
 
     @Operation(
             description = "This endpoint build for make user able to change his password by enter old and new password",
@@ -41,7 +43,7 @@ public class UserController {
             Principal connectedUser
     )
     {
-        userService.changePassword(request , connectedUser);
+        baseUserService.changePassword(request , connectedUser);
         return ResponseEntity.accepted().body("Change password done successfully");
     }
 }

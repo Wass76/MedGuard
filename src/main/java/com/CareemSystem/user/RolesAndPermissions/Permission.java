@@ -1,4 +1,4 @@
-package com.CareemSystem.user;
+package com.CareemSystem.user.RolesAndPermissions;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

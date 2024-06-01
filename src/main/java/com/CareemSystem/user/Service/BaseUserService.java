@@ -1,6 +1,9 @@
-package com.CareemSystem.user;
+package com.CareemSystem.user.Service;
 
 import com.CareemSystem.exception.ApiRequestException;
+import com.CareemSystem.user.Request.ChangePasswordRequest;
+import com.CareemSystem.user.Model.Client;
+import com.CareemSystem.user.Repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,14 +13,16 @@ import java.security.Principal;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+
+public class BaseUserService {
 
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
+
     public void changePassword(
             ChangePasswordRequest request, Principal connectedUser){
 
-        var user  = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        var user  = (Client) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
         //check if currentPassword is correct
         if(!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())){
@@ -31,7 +36,7 @@ public class UserService {
 
         // Update the password
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        userRepository.save(user);
+        clientRepository.save(user);
 
     }
 

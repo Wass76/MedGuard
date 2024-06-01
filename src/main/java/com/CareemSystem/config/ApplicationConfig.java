@@ -2,7 +2,8 @@ package com.CareemSystem.config;
 
 
 import com.CareemSystem.auditing.ApplicationAuditingAware;
-import com.CareemSystem.user.UserRepository;
+import com.CareemSystem.user.Model.Client;
+import com.CareemSystem.user.Repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,20 +12,24 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Optional;
+
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> userRepository.findByPhoneNumber(username)
+        return username -> clientRepository.findByUsername(username)
                 .orElseThrow(()-> new UsernameNotFoundException("User not found"));
     }
 
@@ -51,3 +56,4 @@ public class ApplicationConfig {
         return new BCryptPasswordEncoder();
     }
 }
+

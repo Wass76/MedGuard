@@ -1,4 +1,4 @@
-package com.CareemSystem.user;
+package com.CareemSystem.user.RolesAndPermissions;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.CareemSystem.user.Permission.*;
+import static com.CareemSystem.user.RolesAndPermissions.Permission.*;
 
 
 @RequiredArgsConstructor

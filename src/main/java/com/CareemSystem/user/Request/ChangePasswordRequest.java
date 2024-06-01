@@ -1,4 +1,4 @@
-package com.CareemSystem.user;
+package com.CareemSystem.user.Request;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,24 +1,27 @@
-package com.CareemSystem.auth;
+package com.CareemSystem.user.Request;
 
 
-import com.CareemSystem.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class ClientRegisterRequest {
 
     private String firstName;
 
     private String lastName;
 
-    private String phoneNumber;
+    private String phone;
+    private String username;
+    private LocalDate birthDate;
 
     private String password;
-    private Role role;
+//    private Role role;
 }

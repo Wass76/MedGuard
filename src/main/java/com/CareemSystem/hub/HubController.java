@@ -2,10 +2,7 @@ package com.CareemSystem.hub;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +20,19 @@ public class HubController {
     @GetMapping("{id}")
     public ResponseEntity<?> getHubById(@PathVariable Integer id) {
         return ResponseEntity.ok(hubService.getHubById(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> addNewHub(@RequestBody HubRequest request) {
+        return ResponseEntity.status(201).body (hubService.createHub(request));
+    }
+    @PutMapping("{id}")
+    public ResponseEntity<?> updateHub(@PathVariable Integer id, @RequestBody HubRequest request) {
+        return ResponseEntity.status(202).body(hubService.updateHub(id, request));
+    }
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteHub(@PathVariable Integer id) {
+        return ResponseEntity.status(204).body(hubService.deleteHub(id));
     }
 
 }

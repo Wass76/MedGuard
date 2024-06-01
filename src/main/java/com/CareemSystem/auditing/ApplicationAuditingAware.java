@@ -1,7 +1,7 @@
 package com.CareemSystem.auditing;
 
 
-import com.CareemSystem.user.User;
+import com.CareemSystem.user.Model.Client;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +21,7 @@ public class ApplicationAuditingAware implements AuditorAware<Integer> {
          authentication instanceof AnonymousAuthenticationToken){
             return Optional.empty();
         }
-        User userPrincipal = (User) authentication.getPrincipal();
+        Client userPrincipal = (Client) authentication.getPrincipal();
         return Optional.ofNullable(userPrincipal.getId());
     }
 }
