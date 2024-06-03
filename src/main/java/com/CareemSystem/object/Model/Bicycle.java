@@ -34,7 +34,7 @@ public class Bicycle {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Maintenance> maintenance;
 
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    private List<Extension> extension;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Extension> extension;
 
 }
