@@ -31,7 +31,7 @@ public class Maintenance {
     private Integer cost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "object_id")
+    @JoinColumn(name = "bicycle_id")
     private Bicycle bicycle;
     private LocalDate date;
 

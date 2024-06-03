@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 public class BicycleRequest {
 
-    private ModelPrice model_price;
+    private ModelPriceRequest model_price;
     private Integer size;
     private String type;
     private String note;

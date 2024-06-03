@@ -34,7 +34,7 @@ public class ClientAuthenticationService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .phone(request.getPhone())
-                .username(request.getUsername())
+                ._username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .birthday(request.getBirthDate())
                 .active(true)
@@ -52,12 +52,12 @@ public class ClientAuthenticationService {
 
     public ApiResponseClass authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getUsername()
+            new UsernamePasswordAuthenticationToken(request.getPhone()
                     ,request.getPassword()
             )
         );
         System.out.println("Waaa");
-      Optional<Client> user = clientRepository.findByUsername(request.getUsername());
+      Optional<Client> user = clientRepository.findByPhone(request.getPhone());
       if(user.isPresent()) {
           var jwtToken = jwtService.generateToken(user.get());
           AuthenticationResponse response = AuthenticationResponse.builder()
@@ -65,7 +65,7 @@ public class ClientAuthenticationService {
                   .build();
           return new ApiResponseClass("Login successful", HttpStatus.OK , LocalDateTime.now(),response);
       }
-      Optional<Client> user1 = clientRepository.findByUsername(request.getUsername());
+      Optional<Client> user1 = clientRepository.findBy_username(request.getPhone());
       if(user1.isPresent()) {
           var jwtToken = jwtService.generateToken(user1.get());
           AuthenticationResponse response = AuthenticationResponse.builder()

@@ -1,5 +1,6 @@
 package com.CareemSystem.object.Model;
 
+import com.CareemSystem.object.Enum.ExtensionName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +25,7 @@ public class Extension {
             allocationSize = 1
     )
     private Integer id;
-    private String name;
+    private ExtensionName name;
 
 
 }

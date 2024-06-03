@@ -66,6 +66,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("api/v1/mail/**").authenticated()
                                 .requestMatchers("api/v1/users/**").authenticated()
                                 .requestMatchers("api/v1/hubs/**").authenticated()
+                                .requestMatchers("api/v1/bicycle/**").authenticated()
 
                       //  req.requestMatchers("/api/v1/**").authenticated()
                       //  req.anyRequest()

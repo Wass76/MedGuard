@@ -31,17 +31,20 @@ public class BaseUser implements UserDetails {
     private String phone;
 
     @Column(unique = true)
-    private String username;
+    private String _username;
 
 
     private String password;
 
 
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return phone;
     }
 
     @Override
