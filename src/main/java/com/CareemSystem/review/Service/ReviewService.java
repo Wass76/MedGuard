@@ -101,8 +101,7 @@ public class ReviewService {
 
 
     public ApiResponseClass deleteReview(Integer id) {
-        Review review = reviewRepository.findById(id).orElseThrow(()->new ApiRequestException("review not found"));
-        reviewRepository.deleteById(id);
+        reviewRepository.delete(reviewRepository.findById(id).orElseThrow(()->new ApiRequestException("review not found")));
         return new ApiResponseClass("Review Deleted successfully",HttpStatus.OK,LocalDateTime.now());
     }
 
