@@ -23,5 +23,6 @@ public class ClientRegisterRequest {
     private LocalDate birthDate;
 
     private String password;
+    private String ConfirmPassword;
 //    private Role role;
 }

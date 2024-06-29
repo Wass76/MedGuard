@@ -15,6 +15,7 @@ public class BicycleResponse
     private Integer id;
     private ModelPrice model_price;
     private Integer size;
+//    private String type;
     private String type;
     private String note;
     private List<Maintenance> maintenance;

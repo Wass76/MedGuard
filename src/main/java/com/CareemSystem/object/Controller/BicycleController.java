@@ -14,7 +14,7 @@ public class BicycleController {
     private BicycleService bicycleService;
 
     @GetMapping
-    public ResponseEntity<?>getAllBicycles() {
+    public ResponseEntity<?>getAllBicycles(@RequestParam Long longtitude, @RequestParam Long latitude) {
         return ResponseEntity
                 .ok( bicycleService.getAllObjects());
     }
@@ -22,6 +22,14 @@ public class BicycleController {
     public ResponseEntity<?> getBicycleById(@PathVariable Integer id) {
         return ResponseEntity
                 .ok( bicycleService.getObjectById(id));
+    }
+    @GetMapping("bicycles-by-category")
+    public ResponseEntity<?> getBicyclesByCategory(@RequestParam String category ,@RequestParam Long longtitude, @RequestParam Long latitude) {
+        return ResponseEntity.ok(bicycleService.getObjectByCategory(category));
+    }
+    @GetMapping("bicycles-categories")
+    public ResponseEntity<?> getCategoriesBicycles() {
+        return ResponseEntity.ok(bicycleService.getAllCategories());
     }
     @PostMapping
     public ResponseEntity<?> createBicycle(@RequestBody BicycleRequest request) {

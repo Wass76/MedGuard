@@ -13,7 +13,8 @@ public class BicycleRequest {
 
     private ModelPriceRequest model_price;
     private Integer size;
-    private String type;
+//    private String type;
     private String note;
+    private String type;
 
 }

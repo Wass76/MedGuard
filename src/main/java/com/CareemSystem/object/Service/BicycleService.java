@@ -1,6 +1,7 @@
 package com.CareemSystem.object.Service;
 
 import com.CareemSystem.Response.ApiResponseClass;
+import com.CareemSystem.object.Enum.BicycleCategory;
 import com.CareemSystem.object.Model.Bicycle;
 import com.CareemSystem.object.Model.ModelPrice;
 import com.CareemSystem.object.Repository.BicycleRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -29,8 +31,9 @@ public class BicycleService {
        for (Bicycle bicycle : bicycleList) {
            responseList.add(BicycleResponse.builder()
                    .id(bicycle.getId())
-                   .type(bicycle.getType())
+                   .type(bicycle.getType().toString())
                    .size(bicycle.getSize())
+//                   .category(bicycle.getCategory().toString())
                    .note(bicycle.getNote())
                    .model_price(bicycle.getModel_price())
                    .maintenance(bicycle.getMaintenance())
@@ -44,15 +47,41 @@ public class BicycleService {
         );
         BicycleResponse response = BicycleResponse.builder()
                 .id(bicycle.getId())
-                .type(bicycle.getType())
+                .type(bicycle.getType().toString())
                 .size(bicycle.getSize())
                 .note(bicycle.getNote())
+//                .category(bicycle.getCategory().toString())
                 .model_price(bicycle.getModel_price())
                 .maintenance(bicycle.getMaintenance())
                 .build();
         return new ApiResponseClass("Get object by id" , HttpStatus.ACCEPTED , LocalDateTime.now(),response);
     }
 
+    public ApiResponseClass getObjectByCategory(String name){
+        List<Bicycle> bicycleList = bicycleRepository.findBicycleByType(BicycleCategory.valueOf(name));
+        List<BicycleResponse> responseList = new ArrayList<>();
+
+        for (Bicycle bicycle : bicycleList) {
+            responseList.add(BicycleResponse.builder()
+                    .id(bicycle.getId())
+                    .type(bicycle.getType().toString())
+                    .size(bicycle.getSize())
+//                    .category(bicycle.getType().toString())
+                    .note(bicycle.getNote())
+                    .model_price(bicycle.getModel_price())
+                    .maintenance(bicycle.getMaintenance())
+                    .build());
+        }
+        return new ApiResponseClass("Get bicycles by category" , HttpStatus.ACCEPTED , LocalDateTime.now(),responseList);
+
+    }
+
+    public ApiResponseClass getAllCategories(){
+        BicycleCategory[] bicycleCategories = BicycleCategory.values();
+        List<BicycleCategory> bicycleCategoriesList = new ArrayList<>(Arrays.asList(bicycleCategories));
+
+        return new ApiResponseClass("Get all categories", HttpStatus.ACCEPTED , LocalDateTime.now(),bicycleCategoriesList);
+    }
     @Transactional
     public ApiResponseClass createObject(BicycleRequest request){
 
@@ -66,16 +95,18 @@ public class BicycleService {
                 .note(request.getNote())
                 .size(request.getSize())
                 .model_price(modelPrice)
-                .type(request.getType())
+//                .category(BicycleCategory.valueOf(request.getCategory()))
+                .type(BicycleCategory.valueOf(request.getType()))
                 .build();
 
         bicycleRepository.save(bicycle);
 
         BicycleResponse response = BicycleResponse.builder()
                 .id(bicycle.getId())
-                .type(bicycle.getType())
+                .type(bicycle.getType().toString())
                 .size(bicycle.getSize())
                 .note(bicycle.getNote())
+//                .category(bicycle.getCategory().toString())
                 .model_price(bicycle.getModel_price())
                 .maintenance(bicycle.getMaintenance())
                 .build();
@@ -99,10 +130,20 @@ public class BicycleService {
         bicycle.setNote(request.getNote());
         bicycle.setSize(request.getSize());
         bicycle.setModel_price(modelPrice);
-        bicycle.setType(request.getType());
+//        bicycle.setCategory(BicycleCategory.valueOf(request.getCategory()));
+        bicycle.setType(BicycleCategory.valueOf(request.getType()));
         bicycleRepository.save(bicycle);
 
-        return new ApiResponseClass("Update bicycle with id: " + id + " done successfully", HttpStatus.ACCEPTED , LocalDateTime.now(),bicycle);
+        BicycleResponse response = BicycleResponse.builder()
+                .id(bicycle.getId())
+                .type(bicycle.getType().toString())
+                .size(bicycle.getSize())
+                .note(bicycle.getNote())
+//                .category(bicycle.getCategory().toString())
+                .model_price(bicycle.getModel_price())
+                .maintenance(bicycle.getMaintenance())
+                .build();
+        return new ApiResponseClass("Update bicycle with id: " + id + " done successfully", HttpStatus.ACCEPTED , LocalDateTime.now(),response);
     }
 
     public ApiResponseClass deleteObject(Integer id){
@@ -112,5 +153,6 @@ public class BicycleService {
         bicycleRepository.delete(bicycle);
         return new ApiResponseClass("Delete bicycle with id: " + id + " done successfully" , HttpStatus.NO_CONTENT,LocalDateTime.now());
     }
+
 
 }

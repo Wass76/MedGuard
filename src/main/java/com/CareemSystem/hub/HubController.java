@@ -12,8 +12,8 @@ public class HubController {
     @Autowired
     private HubService hubService;
 
-    @GetMapping
-    public ResponseEntity<?> getAllHubs() {
+    @GetMapping("")
+    public ResponseEntity<?> getAllHubs(@RequestParam Double longtitude, @RequestParam Double latitude) {
         return ResponseEntity.ok(hubService.getAllHubs());
     }
 

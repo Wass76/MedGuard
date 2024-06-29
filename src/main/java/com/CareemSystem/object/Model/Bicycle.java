@@ -1,5 +1,6 @@
 package com.CareemSystem.object.Model;
 
+import com.CareemSystem.object.Enum.BicycleCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,8 +28,9 @@ public class Bicycle {
     private Integer id;
     @OneToOne(cascade = CascadeType.ALL)
     private ModelPrice model_price;
+    private BicycleCategory type;
     private Integer size;
-    private String type;
+//    private String type;
     private String note;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
