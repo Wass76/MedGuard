@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Getter
-public class ApiException {
+public class ApiExceptionResponse {
 
-    private final String message;
+    private final Object message;
     private final HttpStatus status;
     private final LocalDateTime localDateTime;
 }

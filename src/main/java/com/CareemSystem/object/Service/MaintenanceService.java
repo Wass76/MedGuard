@@ -41,7 +41,7 @@ public class MaintenanceService {
        return new ApiResponseClass("Get all maintenance done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now(),responses);
     }
 
-    public ApiResponseClass getMaintenanceById(int id) {
+    public ApiResponseClass getMaintenanceById(Integer id) {
         Maintenance ma = maintenanceRepository.findById(id).orElseThrow(
                 () -> new ApiRequestException("maintenance not found")
         );

@@ -21,13 +21,13 @@ public class ObjectsValidator<T> {
 
     public void validate(T ObjectTOValidate)
     {
-        List<ConstraintViolation<T>> violation =validator.validate(ObjectTOValidate).stream().toList();
+        Set<ConstraintViolation<T>> violation =validator.validate(ObjectTOValidate);
         if(!violation.isEmpty())
         {
             var errormessage=violation
                     .stream()
                     .map(ConstraintViolation::getMessage)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
             throw new ObjectNotValidException(errormessage);
         }
     }

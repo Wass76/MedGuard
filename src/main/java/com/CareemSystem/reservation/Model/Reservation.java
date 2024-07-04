@@ -1,9 +1,10 @@
 package com.CareemSystem.reservation.Model;
 
-import com.CareemSystem.hub.Hub;
+import com.CareemSystem.hub.Entity.Hub;
 import com.CareemSystem.object.Model.Bicycle;
 import com.CareemSystem.reservation.Enum.ReservationStatus;
 import com.CareemSystem.user.Model.Client;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,7 +39,9 @@ public class Reservation {
     @ManyToOne(cascade = CascadeType.ALL)
     private Hub to;
     private Double duration;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private LocalDateTime startTime;
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private LocalDateTime endTime;
     @Enumerated
     private ReservationStatus reservationStatus;

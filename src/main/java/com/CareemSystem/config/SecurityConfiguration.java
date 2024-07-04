@@ -67,6 +67,9 @@ public class SecurityConfiguration {
                                 .requestMatchers("api/v1/users/**").authenticated()
                                 .requestMatchers("api/v1/hubs/**").authenticated()
                                 .requestMatchers("api/v1/bicycle/**").authenticated()
+                                .requestMatchers("api/v1/reservation/**").authenticated()
+                                .requestMatchers("api/v1/review/**").authenticated()
+                                .requestMatchers("api/v1/hub-content/**").authenticated()
 
                       //  req.requestMatchers("/api/v1/**").authenticated()
                       //  req.anyRequest()

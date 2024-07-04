@@ -1,12 +1,6 @@
 package com.CareemSystem.reservation.Request;
 
-import com.CareemSystem.hub.Hub;
-import com.CareemSystem.object.Model.Bicycle;
-import com.CareemSystem.reservation.Enum.ReservationStatus;
-import com.CareemSystem.user.Model.Client;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -21,7 +15,13 @@ public class ReservationRequest {
     private Integer fromHubId;
     private Integer toHubId;
     private Double duration;
+
+//    @FutureOrPresent(message = "Couldn't do it")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private LocalDateTime startTime;
+
+//    @FutureOrPresent(message = "Couldn't do it")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private LocalDateTime endTime;
     private String reservationStatus;
 

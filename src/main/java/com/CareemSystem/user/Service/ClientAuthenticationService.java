@@ -1,5 +1,6 @@
 package com.CareemSystem.user.Service;
 
+import com.CareemSystem.Validator.ObjectsValidator;
 import com.CareemSystem.user.Request.AuthenticationRequest;
 import com.CareemSystem.user.Response.AuthenticationResponse;
 import com.CareemSystem.user.Request.ClientRegisterRequest;
@@ -11,7 +12,9 @@ import com.CareemSystem.user.Repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +31,21 @@ public class ClientAuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final ObjectsValidator<ClientRegisterRequest> registerClientValidator;
+    private final ObjectsValidator<AuthenticationRequest> authenticationRequestValidator;
 
     public ApiResponseClass register(ClientRegisterRequest request) {
+        registerClientValidator.validate(request);
+
+        Optional<Client> username_found = clientRepository.findBy_username(request.getUsername());
+        if (username_found.isPresent()) {
+            throw new ApiRequestException("username already in use");
+        }
+        Optional<Client> phone_found = clientRepository.findByPhone(request.getPhone());
+        if (phone_found.isPresent()) {
+            throw new ApiRequestException("phone number already in use");
+        }
+
         var client = Client.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -51,29 +67,37 @@ public class ClientAuthenticationService {
     }
 
     public ApiResponseClass authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getPhone()
-                    ,request.getPassword()
-            )
-        );
-        System.out.println("Waaa");
-      Optional<Client> user = clientRepository.findByPhone(request.getPhone());
-      if(user.isPresent()) {
-          var jwtToken = jwtService.generateToken(user.get());
-          AuthenticationResponse response = AuthenticationResponse.builder()
-                  .token(jwtToken)
-                  .build();
-          return new ApiResponseClass("Login successful", HttpStatus.OK , LocalDateTime.now(),response);
-      }
-      Optional<Client> user1 = clientRepository.findBy_username(request.getPhone());
-      if(user1.isPresent()) {
-          var jwtToken = jwtService.generateToken(user1.get());
-          AuthenticationResponse response = AuthenticationResponse.builder()
-                  .token(jwtToken)
-                  .build();
-          return new ApiResponseClass("Login successful", HttpStatus.OK , LocalDateTime.now(),response);
-      }
-    throw new ApiRequestException("Invalid phone number");
+        authenticationRequestValidator.validate(request);
+//        System.out.println("Waaa");
+        Optional<Client> user = clientRepository.findByPhone(request.getPhone());
+        if(!user.isPresent()) {
+            throw new ApiRequestException("user not found");
+        }
+        var jwtToken = jwtService.generateToken(user.get());
+        AuthenticationResponse response = AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getPhone()
+                            ,request.getPassword()
+                    )
+            );
+        }
+        catch (AuthenticationException e) {
+            throw new ApiRequestException("invalid email or password");
+        }
+        return new ApiResponseClass("Login successful", HttpStatus.OK , LocalDateTime.now(),response);
+//      Optional<Client> user1 = clientRepository.findBy_username(request.getPhone());
+//      if(user1.isPresent()) {
+//          var jwtToken = jwtService.generateToken(user1.get());
+//          AuthenticationResponse response = AuthenticationResponse.builder()
+//                  .token(jwtToken)
+//                  .build();
+//          return new ApiResponseClass("Login successful", HttpStatus.OK , LocalDateTime.now(),response);
+//      }
     }
 
 

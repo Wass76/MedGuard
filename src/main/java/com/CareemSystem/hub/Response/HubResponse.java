@@ -1,4 +1,4 @@
-package com.CareemSystem.hub;
+package com.CareemSystem.hub.Response;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.Data;
 public class HubResponse {
     private Integer id;
     private String name;
-    private Float latitude;
-    private Float longitude;
+    private Double latitude;
+    private Double longitude;
     private String description;
 }

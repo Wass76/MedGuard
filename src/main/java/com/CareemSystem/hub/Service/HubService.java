@@ -1,8 +1,12 @@
-package com.CareemSystem.hub;
+package com.CareemSystem.hub.Service;
 
 import com.CareemSystem.Response.ApiResponseClass;
 import com.CareemSystem.Validator.ObjectsValidator;
 import com.CareemSystem.exception.ApiRequestException;
+import com.CareemSystem.hub.Entity.Hub;
+import com.CareemSystem.hub.Repository.HubRepository;
+import com.CareemSystem.hub.Response.HubResponse;
+import com.CareemSystem.hub.Request.HubRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +26,11 @@ public class HubService {
     @Autowired
     private ObjectsValidator<HubRequest> validator;
 
-    public ApiResponseClass getAllHubs(){
-        List<Hub> hubList =  hubRepository.findAll();
+    public ApiResponseClass getAllHubs(Double longitude, Double latitude){
+
+//        TODO: Radius of Earth is = 6371
+        List<Hub> hubList = hubRepository.findByLocation( latitude,longitude );
+
         List<HubResponse> responseList = new ArrayList<>();
         for(Hub hub : hubList){
             responseList.add(HubResponse.builder()
@@ -34,7 +41,7 @@ public class HubService {
                     .longitude(hub.getLongitude())
                     .build());
         }
-        return new ApiResponseClass("Get all places done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now(), responseList);
+        return new ApiResponseClass("Get all places done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now(),responseList);
     }
 
     public ApiResponseClass getHubById(Integer id){
@@ -83,8 +90,8 @@ public class HubService {
         validator.validate(request);
         hub.get().setName(request.getName());
         hub.get().setDescription(request.getDescription());
-        hub.get().setLatitude(request.getLatitude());
-        hub.get().setLongitude(request.getLongitude());
+//        hub.get().setLatitude(request.getLatitude());
+//        hub.get().setLongitude(request.getLongitude());
         hubRepository.save(hub.get());
 
         HubResponse response = HubResponse.builder()

@@ -59,6 +59,7 @@ public class ReviewService {
 
     }
 
+    @Transactional
     public ApiResponseClass addReview(ReviewRequest request) {
         validator.validate(request);
 
@@ -88,6 +89,7 @@ public class ReviewService {
     }
 
 
+    @Transactional
     public ApiResponseClass updateReview(Integer id,ReviewRequest request) {
 
         validator.validate(request);
@@ -97,8 +99,6 @@ public class ReviewService {
         return new ApiResponseClass("Review updated Successfully", HttpStatus.OK, LocalDateTime.now(),response);
 
     }
-
-
 
     public ApiResponseClass deleteReview(Integer id) {
         reviewRepository.delete(reviewRepository.findById(id).orElseThrow(()->new ApiRequestException("review not found")));

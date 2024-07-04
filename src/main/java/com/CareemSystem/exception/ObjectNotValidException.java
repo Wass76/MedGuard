@@ -5,9 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 public class ObjectNotValidException extends RuntimeException {
-    private List<String> errors;
+    private final Set<String> errors;
 }

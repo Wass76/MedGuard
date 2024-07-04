@@ -82,6 +82,7 @@ public class BicycleService {
 
         return new ApiResponseClass("Get all categories", HttpStatus.ACCEPTED , LocalDateTime.now(),bicycleCategoriesList);
     }
+
     @Transactional
     public ApiResponseClass createObject(BicycleRequest request){
 
