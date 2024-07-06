@@ -11,8 +11,8 @@ import java.util.List;
 @Builder
 public class HubContentRequest {
 
-    @NotNull(message = "hub_id can't be null")
-    private Integer hub_id;
+//    @NotNull(message = "hub_id can't be null")
+//    private Integer hub_id;
     @NotNull(message = "bicycle id can't be null")
     private List<Integer> bicycles;
 

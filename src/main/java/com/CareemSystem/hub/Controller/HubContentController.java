@@ -3,6 +3,8 @@ package com.CareemSystem.hub.Controller;
 import com.CareemSystem.hub.Entity.HubContent;
 import com.CareemSystem.hub.Request.HubContentRequest;
 import com.CareemSystem.hub.Service.HubContentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +15,35 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/hub-content")
+@Tag(name = "Hub-Content")
 public class HubContentController {
     private final HubContentService hubContentService;
-    @GetMapping("hub-content/{id}")
-    public ResponseEntity<?> getAllHubContent(@PathVariable Integer id) {
+
+    @GetMapping("{id}")
+    @Operation(
+            summary = "get content of hub by id"
+    )
+    public ResponseEntity<?> getHubContent(@PathVariable Integer id) {
         return ResponseEntity.ok().body(hubContentService.getHubContentByHubId(id));
     }
-    @PostMapping
-    public ResponseEntity<?> addHubContent(@RequestBody HubContentRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(hubContentService.createHubContent(request));
+//    @PostMapping
+//    public ResponseEntity<?> addHubContent(@RequestBody HubContentRequest request) {
+//        return ResponseEntity.status(HttpStatus.CREATED).body(hubContentService.createHubContent(request));
+//    }
+
+    @PutMapping("{id}")
+    @Operation(
+            summary = "Edit hub content by id {add bicycles or...."
+    )
+    public ResponseEntity<?> updateHubContent(@PathVariable Integer id, @RequestBody HubContentRequest hubContentRequest) {
+        return ResponseEntity.ok().body(hubContentService.updateHubContent(id, hubContentRequest));
+    }
+
+    @DeleteMapping("{id}")
+    @Operation(
+            summary = "Delete hub content by id"
+    )
+    public ResponseEntity<?> deleteHubContent(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(hubContentService.deleteHubContent(id));
     }
 }

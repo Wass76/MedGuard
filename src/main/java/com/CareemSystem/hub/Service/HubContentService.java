@@ -41,24 +41,55 @@ public class HubContentService {
         return new ApiResponseClass("Get Hub content by id done successfully" , HttpStatus.OK, LocalDateTime.now(),hubContentResponse);
     }
 
-    public ApiResponseClass createHubContent( HubContentRequest request) {
+//    public ApiResponseClass createHubContent( HubContentRequest request) {
+//        hubContentValidator.validate(request);
+//
+//        Hub hub = hubRepository.findById(request.getHub_id()).orElseThrow(
+//                ()-> new ApiRequestException("hub does not exist")
+//        );
+//        List<Bicycle> bicycles = new ArrayList<>();
+//        for(Integer bicycle : request.getBicycles()){
+//            bicycles.add(bicycleRepository.findById(bicycle).orElseThrow(
+//                    ()-> new ApiRequestException("bicycle with id: "+ bicycle + "does not exist")
+//            ));
+//        }
+//
+//        HubContent hubContent = HubContent.builder()
+//                .hub(hub)
+//                .bicycles(bicycles)
+//                .note(request.getNote())
+//                .build();
+//        hubContentRepository.save(hubContent);
+//
+//        HubContentResponse hubContentResponse = HubContentResponse.builder()
+//                .id(hubContent.getId())
+//                .hubId(hubContent.getHub().getId())
+//                .bicycleList(hubContent.getBicycles())
+//                .note(hubContent.getNote())
+//                .build();
+//
+//        return new ApiResponseClass("Create hub content successfully" , HttpStatus.CREATED, LocalDateTime.now(),hubContentResponse);
+//    }
+
+    public ApiResponseClass updateHubContent(Integer hubId, HubContentRequest request) {
         hubContentValidator.validate(request);
 
-        Hub hub = hubRepository.findById(request.getHub_id()).orElseThrow(
-                ()-> new ApiRequestException("hub does not exist")
+        HubContent hubContent = hubContentRepository.findById(hubId).orElseThrow(
+                ()-> new ApiRequestException("hub with this id does not exist")
         );
+
+//        Hub hub = hubRepository.findById(request.getHub_id()).orElseThrow(
+//                ()-> new ApiRequestException("hub does not exist")
+//        );
         List<Bicycle> bicycles = new ArrayList<>();
         for(Integer bicycle : request.getBicycles()){
             bicycles.add(bicycleRepository.findById(bicycle).orElseThrow(
                     ()-> new ApiRequestException("bicycle with id: "+ bicycle + "does not exist")
             ));
         }
-
-        HubContent hubContent = HubContent.builder()
-                .hub(hub)
-                .bicycles(bicycles)
-                .note(request.getNote())
-                .build();
+        hubContent.setNote(request.getNote());
+//        hubContent.setHub(hub);
+        hubContent.setBicycles(bicycles);
         hubContentRepository.save(hubContent);
 
         HubContentResponse hubContentResponse = HubContentResponse.builder()
@@ -68,6 +99,14 @@ public class HubContentService {
                 .note(hubContent.getNote())
                 .build();
 
-        return new ApiResponseClass("Create hub content successfully" , HttpStatus.CREATED, LocalDateTime.now(),hubContentResponse);
+        return new ApiResponseClass("Update hub content successfully" , HttpStatus.OK, LocalDateTime.now(),hubContentResponse);
+    }
+
+    public ApiResponseClass deleteHubContent(Integer id) {
+            HubContent hubContent = hubContentRepository.findById(id).orElseThrow(
+                    ()-> new ApiRequestException("hub content does not exist")
+            );
+            hubContentRepository.delete(hubContent);
+            return new ApiResponseClass("Delete hub content successfully" , HttpStatus.NO_CONTENT, LocalDateTime.now());
     }
 }

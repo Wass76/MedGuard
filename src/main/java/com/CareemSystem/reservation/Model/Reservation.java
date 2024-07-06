@@ -21,13 +21,13 @@ import java.time.LocalDateTime;
 public class Reservation {
     @Id
     @SequenceGenerator(
-            name = "review_id",
-            sequenceName = "review_id",
+            name = "reservation_id",
+            sequenceName = "reservation_id",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "review_id"
+            generator = "reservation_id"
     )
     private Integer id;
     @ManyToOne(cascade = CascadeType.ALL)

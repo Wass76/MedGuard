@@ -4,6 +4,8 @@ import com.CareemSystem.Response.ApiResponseClass;
 import com.CareemSystem.Validator.ObjectsValidator;
 import com.CareemSystem.exception.ApiRequestException;
 import com.CareemSystem.hub.Entity.Hub;
+import com.CareemSystem.hub.Entity.HubContent;
+import com.CareemSystem.hub.Repository.HubContentRepository;
 import com.CareemSystem.hub.Repository.HubRepository;
 import com.CareemSystem.hub.Response.HubResponse;
 import com.CareemSystem.hub.Request.HubRequest;
@@ -25,6 +27,8 @@ public class HubService {
 
     @Autowired
     private ObjectsValidator<HubRequest> validator;
+    @Autowired
+    private HubContentRepository hubContentRepository;
 
     public ApiResponseClass getAllHubs(Double longitude, Double latitude){
 
@@ -70,6 +74,11 @@ public class HubService {
                 .latitude(request.getLatitude())
                 .build();
         hubRepository.save(hub);
+
+        HubContent hubContent = HubContent.builder()
+                .hub(hub)
+                .build();
+        hubContentRepository.save(hubContent);
 
         HubResponse response = HubResponse.builder()
                 .id(hub.getId())

@@ -4,6 +4,8 @@ import com.CareemSystem.Response.ApiResponseClass;
 import com.CareemSystem.Validator.ObjectsValidator;
 import com.CareemSystem.exception.ApiRequestException;
 import com.CareemSystem.hub.Entity.Hub;
+import com.CareemSystem.hub.Entity.HubContent;
+import com.CareemSystem.hub.Repository.HubContentRepository;
 import com.CareemSystem.hub.Repository.HubRepository;
 import com.CareemSystem.object.Model.Bicycle;
 import com.CareemSystem.object.Repository.BicycleRepository;
@@ -36,6 +38,7 @@ public class ReservationService {
     private final BicycleRepository bicycleRepository;
     private final HubRepository hubRepository;
     private final ObjectsValidator<ReservationRequest> validator;
+    private final HubContentRepository hubContentRepository;
 
     @Transactional
     public ApiResponseClass createReservation(ReservationRequest request) {
@@ -92,9 +95,28 @@ public class ReservationService {
 
     @Transactional
     public ApiResponseClass updateReservationToDuringReservation(Integer id) {
-        Reservation reservation = reservationRepository.findById(id).orElseThrow(()-> new ApiRequestException("Reservation not found"));
+
+        Reservation reservation = reservationRepository.findById(id).orElseThrow(
+                ()-> new ApiRequestException("Reservation not found")
+        );
         reservation.setReservationStatus(ReservationStatus.DURING_RESERVATION);
         reservationRepository.save(reservation);
+        HubContent hubContentFrom = hubContentRepository.findByHubId(reservation.getFrom().getId()).orElseThrow(
+                ()-> new ApiRequestException("hub not found")
+        );
+        HubContent hubContentTo = hubContentRepository.findByHubId(reservation.getTo().getId()).orElseThrow(
+                ()-> new ApiRequestException("hub not found")
+        );
+        List<Bicycle> bicycleListFrom = hubContentFrom.getBicycles();
+        for (Bicycle bicycle : bicycleListFrom) {
+            if(bicycle.getId().equals(reservation.getBicycle().getId())) {
+                hubContentFrom.getBicycles().remove(bicycle);
+                hubContentTo.getBicycles().add(bicycle);
+            }
+        }
+        hubContentRepository.save(hubContentFrom);
+        hubContentRepository.save(hubContentTo);
+
         ReservationResponse response = ReservationResponse.builder()
                 .id(reservation.getId())
                 .client(reservation.getClient().get_username())

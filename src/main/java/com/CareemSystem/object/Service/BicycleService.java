@@ -77,8 +77,9 @@ public class BicycleService {
     }
 
     public ApiResponseClass getAllCategories(){
-        BicycleCategory[] bicycleCategories = BicycleCategory.values();
-        List<BicycleCategory> bicycleCategoriesList = new ArrayList<>(Arrays.asList(bicycleCategories));
+//        BicycleCategory[] bicycleCategories = BicycleCategory.values();
+        List<BicycleCategory> bicycleCategoriesList = List.of(BicycleCategory.values());
+//        List<BicycleCategory> bicycleCategoriesList = new ArrayList<>(Arrays.asList(bicycleCategories));
 
         return new ApiResponseClass("Get all categories", HttpStatus.ACCEPTED , LocalDateTime.now(),bicycleCategoriesList);
     }

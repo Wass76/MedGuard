@@ -29,7 +29,7 @@ public class HubContent {
     @OneToOne(cascade = CascadeType.ALL)
     private Hub hub;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Bicycle> bicycles;
 
     private String note;
