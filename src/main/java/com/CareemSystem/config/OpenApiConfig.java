@@ -3,6 +3,7 @@ package com.CareemSystem.config;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.extensions.Extension;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
@@ -14,13 +15,17 @@ import io.swagger.v3.oas.annotations.servers.Server;
         info =@Info(
                 contact = @Contact(
                         name = "Wassem Tenbakji" ,
-                        email = "wasee.tenbakji@gmail.com"
+                        email = "wasee.tenbakji@gmail.com",
+                        url = "https://www.facebook.com/wassem.tnbakje ," +
+                                " https://www.linkedin.com/in/wassem-tenbakji-a078a5206 ," +
+                                " https://instagram.com/wassemtenbakji?igshid=NGVhN2U2NjQ0Yg=="
                 ),
-                description = "open api documentation for Spring Security",
-                title = " OpenApi Swagger Demo",
+                description = "open api documentation for Ride Share System",
+                title = " Ride Share",
                 version = "1.0",
                 license = @License(
-                        name = "Some License",
+                        name = "This Doc made for training purpose and can't be used for buisness or jobs," +
+                                "If You need any help contact me with previous email",
                         url = "https://some-url.com"
                 ),
                 termsOfService = "Term of my Service"
