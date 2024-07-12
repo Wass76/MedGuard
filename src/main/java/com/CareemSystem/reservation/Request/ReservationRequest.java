@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 public class ReservationRequest {
 
-    private Integer clientId;
+//    private Integer clientId;
     private Integer bicycleId;
     private Integer fromHubId;
     private Integer toHubId;

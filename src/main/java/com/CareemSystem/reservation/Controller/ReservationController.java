@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -79,8 +80,8 @@ public class ReservationController {
                     )
             }
     )
-    public ApiResponseClass createReservation(@RequestBody ReservationRequest request) {
-        return reservationService.createReservation(request);
+    public ApiResponseClass createReservation(@RequestBody ReservationRequest request, Principal principal) {
+        return reservationService.createReservation(request,principal);
     }
 
     @PutMapping("/update-to-during-Reservation/{id}")

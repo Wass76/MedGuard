@@ -21,8 +21,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +43,12 @@ public class ReservationService {
     private final HubContentRepository hubContentRepository;
 
     @Transactional
-    public ApiResponseClass createReservation(ReservationRequest request) {
+    public ApiResponseClass createReservation(ReservationRequest request, Principal principal) {
         validator.validate(request);
 
-        Client client = clientRepository.findById(request.getClientId()).orElseThrow(
+        Client reservationOwner = (Client) ((UsernamePasswordAuthenticationToken)principal).getPrincipal();
+
+        Client client = clientRepository.findById(reservationOwner.getId()).orElseThrow(
                 ()-> new ApiRequestException("Client not found"));
         Bicycle bicycle = bicycleRepository.findById(request.getBicycleId()).orElseThrow(
                 ()-> new ApiRequestException("Bicycle not found"));

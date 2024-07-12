@@ -16,9 +16,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 contact = @Contact(
                         name = "Wassem Tenbakji" ,
                         email = "wasee.tenbakji@gmail.com",
-                        url = "https://www.facebook.com/wassem.tnbakje ," +
-                                " https://www.linkedin.com/in/wassem-tenbakji-a078a5206 ," +
-                                " https://instagram.com/wassemtenbakji?igshid=NGVhN2U2NjQ0Yg=="
+                        url = "https://www.linkedin.com/in/wassem-tenbakji-a078a5206"
                 ),
                 description = "open api documentation for Ride Share System",
                 title = " Ride Share",
