@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("api/v1/hub-content")
+@RequiredArgsConstructor
 @Tag(name = "Hub-Content")
 public class HubContentController {
     private final HubContentService hubContentService;
@@ -49,3 +51,4 @@ public class HubContentController {
         return ResponseEntity.ok().body(hubContentService.deleteHubContent(id));
     }
 }
+

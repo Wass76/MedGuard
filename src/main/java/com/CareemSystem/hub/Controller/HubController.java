@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/hubs")
 @Tag(name = "Hub")
+@CrossOrigin(origins = "*")
 public class HubController {
     @Autowired
     private HubService hubService;
