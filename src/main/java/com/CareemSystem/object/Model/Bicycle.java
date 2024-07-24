@@ -39,4 +39,7 @@ public class Bicycle {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Extension> extension;
 
+    private Boolean hasOffer;
+    private Double discountPrice;
+
 }

@@ -33,7 +33,6 @@ public class BicycleService {
                    .id(bicycle.getId())
                    .type(bicycle.getType().toString())
                    .size(bicycle.getSize())
-//                   .category(bicycle.getCategory().toString())
                    .note(bicycle.getNote())
                    .model_price(bicycle.getModel_price())
                    .maintenance(bicycle.getMaintenance())
@@ -154,6 +153,25 @@ public class BicycleService {
         );
         bicycleRepository.delete(bicycle);
         return new ApiResponseClass("Delete bicycle with id: " + id + " done successfully" , HttpStatus.NO_CONTENT,LocalDateTime.now());
+    }
+
+    public ApiResponseClass getOfferBicycles(){
+        List<Bicycle> bicycleList = bicycleRepository.findBicyclesByDiscountPriceTrue();
+        if(bicycleList.isEmpty()){
+            return new ApiResponseClass("There is no offers now", HttpStatus.NO_CONTENT , LocalDateTime.now());
+        }
+       List<BicycleResponse> response = new ArrayList<>();
+        for(Bicycle bicycle : bicycleList){
+            response.add(BicycleResponse.builder()
+                    .id(bicycle.getId())
+                    .type(bicycle.getType().toString())
+                    .size(bicycle.getSize())
+                    .note(bicycle.getNote())
+                    .model_price(bicycle.getModel_price())
+                    .maintenance(bicycle.getMaintenance())
+                    .build());
+        }
+        return new ApiResponseClass("Get offers", HttpStatus.OK , LocalDateTime.now(),response);
     }
 
 

@@ -125,4 +125,23 @@ public class BicycleController {
                 .status(HttpStatus.NO_CONTENT)
                 .body(bicycleService.deleteObject(id));
     }
+
+    @GetMapping("discountBicycles")
+    @Operation(
+            description = "This endpoint build to Get offers which is in our system",
+            summary = "Get offers",
+            responses = {
+                    @ApiResponse(
+                            description = "Get done successfully",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(
+                            description = "There is no offers now",
+                            responseCode = "204"
+                    )
+            }
+    )
+    public ResponseEntity<?> getOffers(){
+        return ResponseEntity.ok(bicycleService.getOfferBicycles());
+    }
 }

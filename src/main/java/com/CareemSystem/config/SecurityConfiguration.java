@@ -89,6 +89,8 @@ public class SecurityConfiguration {
                                 .requestMatchers("api/v1/reservation/**").authenticated()
                                 .requestMatchers("api/v1/review/**").authenticated()
                                 .requestMatchers("api/v1/hub-content/**").authenticated()
+                                .requestMatchers("api/v1/favourite-bicycles/**").authenticated()
+                                .requestMatchers("api/v1/policy/**").authenticated()
 
                       //  req.requestMatchers("/api/v1/**").authenticated()
                       //  req.anyRequest()
@@ -97,7 +99,7 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
+                // .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
                 .logout(logout ->
                         logout.logoutUrl("/api/v1/auth/logout")
                                 .addLogoutHandler(logoutHandler())
