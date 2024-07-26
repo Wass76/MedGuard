@@ -1,7 +1,7 @@
 package com.CareemSystem.object.Service;
 
 import com.CareemSystem.Response.ApiResponseClass;
-import com.CareemSystem.exception.ApiRequestException;
+import com.CareemSystem.utils.exception.ApiRequestException;
 import com.CareemSystem.object.Model.Maintenance;
 import com.CareemSystem.object.Repository.BicycleRepository;
 import com.CareemSystem.object.Repository.MaintenanceRepository;

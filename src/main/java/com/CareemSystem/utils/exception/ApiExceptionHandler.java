@@ -1,6 +1,5 @@
-package com.CareemSystem.exception;
+package com.CareemSystem.utils.exception;
 
-import com.CareemSystem.Validator.PasswordConstraintValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

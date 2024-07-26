@@ -1,4 +1,4 @@
-package com.CareemSystem.exception;
+package com.CareemSystem.utils.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

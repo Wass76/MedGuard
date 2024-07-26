@@ -1,9 +1,8 @@
 package com.CareemSystem.hub.Service;
 
 import com.CareemSystem.Response.ApiResponseClass;
-import com.CareemSystem.Validator.ObjectsValidator;
-import com.CareemSystem.exception.ApiRequestException;
-import com.CareemSystem.hub.Entity.Hub;
+import com.CareemSystem.utils.Validator.ObjectsValidator;
+import com.CareemSystem.utils.exception.ApiRequestException;
 import com.CareemSystem.hub.Entity.HubContent;
 import com.CareemSystem.hub.Repository.HubContentRepository;
 import com.CareemSystem.hub.Repository.HubRepository;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service

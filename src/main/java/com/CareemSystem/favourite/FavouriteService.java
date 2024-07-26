@@ -1,9 +1,8 @@
 package com.CareemSystem.favourite;
 
 import com.CareemSystem.Response.ApiResponseClass;
-import com.CareemSystem.Validator.ObjectsValidator;
-import com.CareemSystem.exception.ApiRequestException;
-import com.CareemSystem.object.Enum.BicycleCategory;
+import com.CareemSystem.utils.Validator.ObjectsValidator;
+import com.CareemSystem.utils.exception.ApiRequestException;
 import com.CareemSystem.object.Model.Bicycle;
 import com.CareemSystem.object.Repository.BicycleRepository;
 import com.CareemSystem.object.Response.BicycleResponse;

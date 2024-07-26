@@ -1,6 +1,6 @@
-package com.CareemSystem.annotation;
+package com.CareemSystem.utils.annotation;
 
-import com.CareemSystem.Validator.PasswordConstraintValidator;
+import com.CareemSystem.utils.Validator.PasswordConstraintValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

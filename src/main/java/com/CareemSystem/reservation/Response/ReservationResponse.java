@@ -17,4 +17,5 @@ public class ReservationResponse {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String reservationStatus;
+    private Double price;
 }

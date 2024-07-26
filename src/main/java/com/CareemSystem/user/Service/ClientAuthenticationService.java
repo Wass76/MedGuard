@@ -1,18 +1,17 @@
 package com.CareemSystem.user.Service;
 
-import com.CareemSystem.Validator.ObjectsValidator;
+import com.CareemSystem.utils.Validator.ObjectsValidator;
 import com.CareemSystem.user.Request.AuthenticationRequest;
 import com.CareemSystem.user.Response.AuthenticationResponse;
 import com.CareemSystem.user.Request.ClientRegisterRequest;
 import com.CareemSystem.Response.ApiResponseClass;
 import com.CareemSystem.config.JwtService;
-import com.CareemSystem.exception.ApiRequestException;
+import com.CareemSystem.utils.exception.ApiRequestException;
 import com.CareemSystem.user.Model.Client;
 import com.CareemSystem.user.Repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;

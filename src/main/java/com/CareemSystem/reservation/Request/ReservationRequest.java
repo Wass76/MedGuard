@@ -1,5 +1,6 @@
 package com.CareemSystem.reservation.Request;
 
+import com.CareemSystem.wallet.Enum.PaymentMethod;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +24,9 @@ public class ReservationRequest {
 //    @FutureOrPresent(message = "Couldn't do it")
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private LocalDateTime endTime;
+
     private String reservationStatus;
+    private PaymentMethod paymentMethod;
 
 
 

@@ -1,4 +1,4 @@
-package com.CareemSystem.mail;
+package com.CareemSystem.utils.mail;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;

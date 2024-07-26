@@ -1,4 +1,4 @@
-package com.CareemSystem.exception;
+package com.CareemSystem.utils.exception;
 
 
 public class ApiRequestException extends RuntimeException{

@@ -2,6 +2,7 @@ package com.CareemSystem.favourite;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,8 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/favourite-bicycles")
 @RequiredArgsConstructor
+@CrossOrigin("*")
+@Tag(name = "Favourite")
 public class FavouriteController {
 
     @Autowired

@@ -2,6 +2,10 @@ package com.CareemSystem;
 
 import com.CareemSystem.policy.Policy;
 import com.CareemSystem.policy.PolicyRepository;
+import com.CareemSystem.wallet.Model.MoneyCode;
+import com.CareemSystem.wallet.Repository.MoneyCodeRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,17 +13,19 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
+import java.util.Random;
+import java.util.random.RandomGenerator;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class CareemSystemApplication implements CommandLineRunner {
 
-	private final PolicyRepository policyRepository;
-
-	public CareemSystemApplication(PolicyRepository policyRepository) {
-		this.policyRepository = policyRepository;
-	}
+	@Autowired
+	private PolicyRepository policyRepository;
+	@Autowired
+	private MoneyCodeRepository moneyCodeRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CareemSystemApplication.class, args);
@@ -42,6 +48,19 @@ public class CareemSystemApplication implements CommandLineRunner {
 					.build();
 			policyRepository.save(policy);
 		}
+		MoneyCode moneyCode= MoneyCode.builder()
+				.code("Wassem" + new Random().nextInt(10000))
+				.balance(200000.0)
+				.valid(true)
+				.build();
+		MoneyCode moneyCode2= MoneyCode.builder()
+				.code("Abd-alaziz" + new Random().nextInt(10000))
+				.balance(50000.0)
+				.valid(true)
+				.build();
+
+		moneyCodeRepository.save(moneyCode);
+		moneyCodeRepository.save(moneyCode2);
 	}
 }
 

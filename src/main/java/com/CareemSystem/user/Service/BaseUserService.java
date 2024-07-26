@@ -1,6 +1,6 @@
 package com.CareemSystem.user.Service;
 
-import com.CareemSystem.exception.ApiRequestException;
+import com.CareemSystem.utils.exception.ApiRequestException;
 import com.CareemSystem.user.Request.ChangePasswordRequest;
 import com.CareemSystem.user.Model.Client;
 import com.CareemSystem.user.Repository.ClientRepository;

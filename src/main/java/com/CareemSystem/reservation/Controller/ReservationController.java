@@ -125,6 +125,8 @@ public class ReservationController {
                             responseCode = "200"
                     )
             }
+//            ,
+//            hidden = true
     )
     public ApiResponseClass deleteReservation(@PathVariable Integer id) {
         return reservationService.deleteReservation(id);

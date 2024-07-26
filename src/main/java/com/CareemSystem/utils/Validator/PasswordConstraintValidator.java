@@ -1,7 +1,7 @@
-package com.CareemSystem.Validator;
+package com.CareemSystem.utils.Validator;
 
 //import SpringBootStarterProject.ManagingPackage.annotation.ValidPassword;
-import com.CareemSystem.annotation.ValidPassword;
+import com.CareemSystem.utils.annotation.ValidPassword;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.SneakyThrows;

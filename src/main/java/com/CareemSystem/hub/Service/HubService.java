@@ -1,8 +1,8 @@
 package com.CareemSystem.hub.Service;
 
 import com.CareemSystem.Response.ApiResponseClass;
-import com.CareemSystem.Validator.ObjectsValidator;
-import com.CareemSystem.exception.ApiRequestException;
+import com.CareemSystem.utils.Validator.ObjectsValidator;
+import com.CareemSystem.utils.exception.ApiRequestException;
 import com.CareemSystem.hub.Entity.Hub;
 import com.CareemSystem.hub.Entity.HubContent;
 import com.CareemSystem.hub.Repository.HubContentRepository;

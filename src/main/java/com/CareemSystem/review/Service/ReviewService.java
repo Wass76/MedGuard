@@ -1,14 +1,13 @@
 package com.CareemSystem.review.Service;
 
 import com.CareemSystem.Response.ApiResponseClass;
-import com.CareemSystem.Validator.ObjectsValidator;
-import com.CareemSystem.exception.ApiRequestException;
+import com.CareemSystem.utils.Validator.ObjectsValidator;
+import com.CareemSystem.utils.exception.ApiRequestException;
 import com.CareemSystem.object.Model.Bicycle;
 import com.CareemSystem.object.Repository.BicycleRepository;
 import com.CareemSystem.reservation.Enum.ReservationStatus;
 import com.CareemSystem.reservation.Model.Reservation;
 import com.CareemSystem.reservation.Repository.ReservationRepository;
-import com.CareemSystem.reservation.Response.ReservationResponse;
 import com.CareemSystem.review.Model.Review;
 import com.CareemSystem.review.Repository.ReviewRepository;
 import com.CareemSystem.review.Request.ReviewRequest;

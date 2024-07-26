@@ -1,8 +1,8 @@
 package com.CareemSystem.reservation.Service;
 
 import com.CareemSystem.Response.ApiResponseClass;
-import com.CareemSystem.Validator.ObjectsValidator;
-import com.CareemSystem.exception.ApiRequestException;
+import com.CareemSystem.utils.Validator.ObjectsValidator;
+import com.CareemSystem.utils.exception.ApiRequestException;
 import com.CareemSystem.hub.Entity.Hub;
 import com.CareemSystem.hub.Entity.HubContent;
 import com.CareemSystem.hub.Repository.HubContentRepository;
@@ -16,12 +16,17 @@ import com.CareemSystem.reservation.Request.ReservationRequest;
 import com.CareemSystem.reservation.Response.ReservationResponse;
 import com.CareemSystem.user.Model.Client;
 import com.CareemSystem.user.Repository.ClientRepository;
+import com.CareemSystem.wallet.Enum.PaymentMethod;
+import com.CareemSystem.wallet.Repository.WalletRepository;
 import jakarta.transaction.Transactional;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -29,18 +34,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
-@Data
 @RequiredArgsConstructor
 @Service
 public class ReservationService {
 
-    private final ReservationRepository reservationRepository;
+    @Autowired
+    private ReservationRepository reservationRepository;
     private final ClientRepository clientRepository;
     private final BicycleRepository bicycleRepository;
     private final HubRepository hubRepository;
     private final ObjectsValidator<ReservationRequest> validator;
     private final HubContentRepository hubContentRepository;
+    private final WalletRepository walletRepository;
 
     @Transactional
     public ApiResponseClass createReservation(ReservationRequest request, Principal principal) {
@@ -68,6 +73,14 @@ public class ReservationService {
             return new ApiResponseClass("Reserved, Try another Time",HttpStatus.BAD_REQUEST,LocalDateTime.now());
         }
 
+        Double reservationPrice = bicycle.getModel_price().getPrice() * request.getDuration();
+        Double walletBalance = client.getWallet().getBalance();
+
+        if(request.getPaymentMethod().equals(PaymentMethod.Wallet)){
+            if(walletBalance < reservationPrice){
+                 throw new ApiRequestException("Not enough wallet, please charge your wallet first then try again");
+            }
+        }
 
         Reservation reservation = Reservation.builder()
                 .client(client)
@@ -82,6 +95,12 @@ public class ReservationService {
 
         reservationRepository.save(reservation);
 
+
+        client.getWallet().setBalance(walletBalance - reservationPrice);
+        walletRepository.save(client.getWallet());
+        clientRepository.save(client);
+        System.out.println(client.getWallet().getBalance());
+
         ReservationResponse response = ReservationResponse.builder()
                 .id(reservation.getId())
                 .client(reservation.getClient().get_username())
@@ -92,6 +111,7 @@ public class ReservationService {
                 .endTime(reservation.getEndTime())
                 .duration(reservation.getDuration())
                 .reservationStatus(reservation.getReservationStatus().name())
+                .price(reservationPrice)
                 .build();
 
         return new ApiResponseClass("Reservation created successfully", HttpStatus.CREATED, LocalDateTime.now(),response);
@@ -118,6 +138,7 @@ public class ReservationService {
                 hubContentTo.getBicycles().add(bicycle);
             }
         }
+
         hubContentRepository.save(hubContentFrom);
         hubContentRepository.save(hubContentTo);
 
@@ -131,6 +152,7 @@ public class ReservationService {
                 .endTime(reservation.getEndTime())
                 .duration(reservation.getDuration())
                 .reservationStatus(reservation.getReservationStatus().name())
+                .price(reservation.getDuration() * reservation.getBicycle().getModel_price().getPrice())
                 .build();
         return new ApiResponseClass("Reservation updated successfully", HttpStatus.OK, LocalDateTime.now(),response);
     }
@@ -149,6 +171,7 @@ public class ReservationService {
                 .endTime(reservation.getEndTime())
                 .duration(reservation.getDuration())
                 .reservationStatus(reservation.getReservationStatus().name())
+                .price(reservation.getDuration() * reservation.getBicycle().getModel_price().getPrice())
                 .build();
         return new ApiResponseClass("Reservation updated successfully", HttpStatus.OK, LocalDateTime.now(),response);
     }
@@ -168,6 +191,7 @@ public class ReservationService {
                 .endTime(reservation.getEndTime())
                 .duration(reservation.getDuration())
                 .reservationStatus(reservation.getReservationStatus().name())
+                .price(reservation.getDuration() * reservation.getBicycle().getModel_price().getPrice())
                 .build();
 
         return new ApiResponseClass("Reservation get successfully", HttpStatus.OK, LocalDateTime.now(),response);
@@ -191,6 +215,7 @@ public class ReservationService {
                     .endTime(reservation.getEndTime())
                     .duration(reservation.getDuration())
                     .reservationStatus(reservation.getReservationStatus().name())
+                    .price(reservation.getDuration() * reservation.getBicycle().getModel_price().getPrice())
                     .build();
             responses.add(response);
         }
@@ -215,6 +240,7 @@ public class ReservationService {
                     .endTime(reservation.getEndTime())
                     .duration(reservation.getDuration())
                     .reservationStatus(reservation.getReservationStatus().name())
+                    .price(reservation.getDuration() * reservation.getBicycle().getModel_price().getPrice())
                     .build();
             responses.add(response);
         }
@@ -222,7 +248,31 @@ public class ReservationService {
     }
 
     public ApiResponseClass deleteReservation(Integer id) {
-        reservationRepository.delete(reservationRepository.findById(id).orElseThrow(()-> new ApiRequestException("Reservation not found")));
+       Reservation reservation =  reservationRepository.findById(id).orElseThrow(
+                ()-> new ApiRequestException("Reservation not found")
+       );
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var client = clientRepository.findByPhone(authentication.getName()).orElseThrow(
+                ()-> new ApiRequestException("Client not found")
+        );
+        Double reservationPrice = reservation.getDuration() * reservation.getBicycle().getModel_price().getPrice();
+        Double walletBalance = client.getWallet().getBalance();
+        if (client.get_username().equals(reservation.getClient().get_username())) {
+
+            if (reservation.getReservationStatus().equals(ReservationStatus.NOT_STARTED)){
+                client.getWallet().setBalance(walletBalance + reservationPrice);
+//                clientRepository.save(client);
+                walletRepository.save(client.getWallet());
+                reservationRepository.delete(reservation);
+            }
+            else {
+                throw new ApiRequestException("You are not allowed to delete a reservation that is already in progress");
+            }
+        }
+        else {
+            throw new IllegalArgumentException("You can't cancel a reservation you didn't book");
+        }
+
         return new ApiResponseClass("Reservation Cancelled successfully", HttpStatus.OK, LocalDateTime.now());
     }
 

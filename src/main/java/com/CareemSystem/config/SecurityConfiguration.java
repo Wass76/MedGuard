@@ -91,6 +91,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("api/v1/hub-content/**").authenticated()
                                 .requestMatchers("api/v1/favourite-bicycles/**").authenticated()
                                 .requestMatchers("api/v1/policy/**").authenticated()
+                                .requestMatchers("api/v1/wallet/**").authenticated()
 
                       //  req.requestMatchers("/api/v1/**").authenticated()
                       //  req.anyRequest()

@@ -1,4 +1,4 @@
-package com.CareemSystem.auditing;
+package com.CareemSystem.utils.auditing;
 
 
 import com.CareemSystem.user.Model.Client;

@@ -1,4 +1,4 @@
-package com.CareemSystem.mail;
+package com.CareemSystem.utils.mail;
 
 import lombok.Getter;
 import lombok.Setter;

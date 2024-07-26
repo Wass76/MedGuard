@@ -1,5 +1,6 @@
 package com.CareemSystem.user.Model;
 
+import com.CareemSystem.wallet.Model.Wallet;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,9 @@ public class Client extends BaseUser implements UserDetails {
     private Boolean active;
 
     private LocalDate birthday;
+
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "client")
+    private Wallet wallet;
 
 
 

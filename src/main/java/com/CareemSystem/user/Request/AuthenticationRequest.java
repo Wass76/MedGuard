@@ -1,6 +1,6 @@
 package com.CareemSystem.user.Request;
 
-import com.CareemSystem.annotation.ValidPassword;
+import com.CareemSystem.utils.annotation.ValidPassword;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
