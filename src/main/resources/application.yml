@@ -1,5 +1,6 @@
 server:
   port: 3010
+  address: localhost
 
 spring:
   application:
@@ -20,6 +21,12 @@ spring:
 #        hibernate:
 #          enable_hibernate_spatial = true
     show-sql: true
+
+
+    #uploading direction
+  file:
+    upload-dir
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -31,3 +38,7 @@ spring:
           auth: true
           starttls:
             enable: true  # This is the correct property name for enabling TLS
+  servlet:
+    multipart:
+      max-request-size: 1650MB
+      max-file-size: 1650MB

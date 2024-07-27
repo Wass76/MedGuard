@@ -24,7 +24,7 @@ public class ModelPrice {
             allocationSize = 1
     )
     private Integer id;
-    private Integer price;
+    private Double price;
     private String model;
 
 }

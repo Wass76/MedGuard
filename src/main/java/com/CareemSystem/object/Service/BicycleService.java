@@ -8,6 +8,10 @@ import com.CareemSystem.object.Repository.BicycleRepository;
 import com.CareemSystem.object.Repository.ModelPriceRepository;
 import com.CareemSystem.object.Request.BicycleRequest;
 import com.CareemSystem.object.Response.BicycleResponse;
+import com.CareemSystem.resource.Enum.ResourceType;
+import com.CareemSystem.resource.Model.FileMetaData;
+import com.CareemSystem.resource.Repository.FileMetaDataRepository;
+import com.CareemSystem.resource.service.FileStorageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -24,6 +27,8 @@ public class BicycleService {
 
     private final BicycleRepository bicycleRepository;
     private final ModelPriceRepository modelPriceRepository;
+    private final FileStorageService fileStorageService;
+    private final FileMetaDataRepository fileMetaDataRepository;
 
     public ApiResponseClass getAllObjects(){
        List<Bicycle> bicycleList = bicycleRepository.findAll();
@@ -33,6 +38,7 @@ public class BicycleService {
                    .id(bicycle.getId())
                    .type(bicycle.getType().toString())
                    .size(bicycle.getSize())
+                   .photoPath(fileMetaDataRepository.findById(bicycle.getPhoto_id()).get().getFilePath())
                    .note(bicycle.getNote())
                    .model_price(bicycle.getModel_price())
                    .maintenance(bicycle.getMaintenance())
@@ -48,6 +54,7 @@ public class BicycleService {
                 .id(bicycle.getId())
                 .type(bicycle.getType().toString())
                 .size(bicycle.getSize())
+                .photoPath(fileMetaDataRepository.findById(bicycle.getPhoto_id()).get().getFilePath())
                 .note(bicycle.getNote())
 //                .category(bicycle.getCategory().toString())
                 .model_price(bicycle.getModel_price())
@@ -65,6 +72,7 @@ public class BicycleService {
                     .id(bicycle.getId())
                     .type(bicycle.getType().toString())
                     .size(bicycle.getSize())
+                    .photoPath(fileMetaDataRepository.findById(bicycle.getPhoto_id()).get().getFilePath())
 //                    .category(bicycle.getType().toString())
                     .note(bicycle.getNote())
                     .model_price(bicycle.getModel_price())
@@ -92,6 +100,7 @@ public class BicycleService {
                 .build();
         modelPriceRepository.save(modelPrice);
 
+
         Bicycle bicycle = Bicycle.builder()
                 .note(request.getNote())
                 .size(request.getSize())
@@ -100,12 +109,15 @@ public class BicycleService {
                 .type(BicycleCategory.valueOf(request.getType()))
                 .build();
 
+        FileMetaData bicyclePhoto = fileStorageService.storeFileFromOtherEntity(request.getPhoto(), ResourceType.Bicycle);
+        bicycle.setPhoto_id(bicyclePhoto.getId());
         bicycleRepository.save(bicycle);
 
         BicycleResponse response = BicycleResponse.builder()
                 .id(bicycle.getId())
                 .type(bicycle.getType().toString())
                 .size(bicycle.getSize())
+                .photoPath(fileMetaDataRepository.findById(bicycle.getPhoto_id()).get().getFilePath())
                 .note(bicycle.getNote())
 //                .category(bicycle.getCategory().toString())
                 .model_price(bicycle.getModel_price())
@@ -139,6 +151,7 @@ public class BicycleService {
                 .id(bicycle.getId())
                 .type(bicycle.getType().toString())
                 .size(bicycle.getSize())
+                .photoPath(fileMetaDataRepository.findById(bicycle.getPhoto_id()).get().getFilePath())
                 .note(bicycle.getNote())
 //                .category(bicycle.getCategory().toString())
                 .model_price(bicycle.getModel_price())

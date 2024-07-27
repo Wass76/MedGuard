@@ -5,10 +5,15 @@ import com.CareemSystem.object.Service.BicycleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jdk.jfr.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -76,7 +81,8 @@ public class BicycleController {
     public ResponseEntity<?> getCategoriesBicycles() {
         return ResponseEntity.ok(bicycleService.getAllCategories());
     }
-    @PostMapping
+//    @PostMapping(consumes = {"multipart/form-data" , "application/json"})
+    @PostMapping(consumes = "multipart/form-data")
     @Operation(
             description = "This endpoint build to create new bicycle in our system",
             summary = "Create new bicycle",
@@ -87,7 +93,10 @@ public class BicycleController {
                     )
             }
     )
-    public ResponseEntity<?> createBicycle(@RequestBody BicycleRequest request) {
+    public ResponseEntity<?> createBicycle(@RequestPart BicycleRequest request , @RequestPart  MultipartFile file) throws IOException {
+//        file.getContentType();
+        System.out.println(request.getType());
+        request.setPhoto(file);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(bicycleService.createObject(request));

@@ -45,7 +45,8 @@ public class SecurityConfiguration {
             "/configuration/security",
             "/swagger-ui/**",
             "/webjars/**",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
+            "/images/**"
     };
     private final AuthenticationProvider authenticationProvider;
 
@@ -92,6 +93,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("api/v1/favourite-bicycles/**").authenticated()
                                 .requestMatchers("api/v1/policy/**").authenticated()
                                 .requestMatchers("api/v1/wallet/**").authenticated()
+                                .requestMatchers("api/v1/photo/**").authenticated()
 
                       //  req.requestMatchers("/api/v1/**").authenticated()
                       //  req.anyRequest()

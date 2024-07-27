@@ -1,5 +1,9 @@
 package com.CareemSystem;
 
+import com.CareemSystem.object.Enum.BicycleCategory;
+import com.CareemSystem.object.Model.Bicycle;
+import com.CareemSystem.object.Model.ModelPrice;
+import com.CareemSystem.object.Repository.BicycleRepository;
 import com.CareemSystem.policy.Policy;
 import com.CareemSystem.policy.PolicyRepository;
 import com.CareemSystem.wallet.Model.MoneyCode;
@@ -9,10 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.random.RandomGenerator;
 
@@ -26,6 +33,10 @@ public class CareemSystemApplication implements CommandLineRunner {
 	private PolicyRepository policyRepository;
 	@Autowired
 	private MoneyCodeRepository moneyCodeRepository;
+    @Autowired
+    private BicycleRepository bicycleRepository;
+	@Autowired
+	private ServerProperties serverProperties;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CareemSystemApplication.class, args);
@@ -61,6 +72,51 @@ public class CareemSystemApplication implements CommandLineRunner {
 
 		moneyCodeRepository.save(moneyCode);
 		moneyCodeRepository.save(moneyCode2);
+
+
+//		if(bicycleRepository.findAll().isEmpty()){
+//			Bicycle bicycle1 = Bicycle.builder()
+//					.model_price(ModelPrice.builder()
+//							.model("SASR23")
+//							.price(342.0).build())
+//					.size(17)
+//					.hasOffer(false)
+//					.type(BicycleCategory.Road_bikes)
+////					.photoPath("upload-dir/-5893485657953777788_120.jpg")
+//					.build();
+//			Bicycle bicycle2 = Bicycle.builder()
+//					.model_price(ModelPrice.builder()
+//							.model("KASAR43")
+//							.price(1000.0).build())
+//					.size(18)
+//					.hasOffer(false)
+//					.type(BicycleCategory.Road_bikes)
+////					.photoPath("upload-dir/DSC01930.JPG")
+//					.build();
+//			Bicycle bicycle3 = Bicycle.builder()
+//					.model_price(ModelPrice.builder()
+//							.model("XMLO88")
+//							.price(1500.0).build())
+//					.size(17)
+//					.hasOffer(false)
+//					.type(BicycleCategory.Road_bikes)
+////					.photoPath("upload-dir/FB_IMG_1625816069245.jpg")
+//					.build();
+//
+//			String  server = serverProperties.getAddress().toString();
+//			String port = serverProperties.getPort().toString();
+////			System.out.println(port + " " + server);
+//
+//			if (Objects.equals(server, "localhost/127.0.0.1") && Objects.equals(port,"3010")){
+//				bicycle1.setPhotoPath("D:/BusinessProjects/SpringProjects/Careem-System/upload-dir/-5893485657953777788_120.jpg");
+//				bicycle2.setPhotoPath("D:/BusinessProjects/SpringProjects/Careem-System/upload-dir/DSC01930.JPG");
+//				bicycle3.setPhotoPath("D:/BusinessProjects/SpringProjects/Careem-System/upload-dir/FB_IMG_1625816069245.jpg");
+//				System.out.println(server + "/"+port);
+//			}
+//			bicycleRepository.save(bicycle1);
+//			bicycleRepository.save(bicycle2);
+//			bicycleRepository.save(bicycle3);
+//		}
 	}
 }
 
