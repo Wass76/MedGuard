@@ -56,30 +56,30 @@ public class FileStorageService {
     }
 
     public ApiResponseClass storeFile(MultipartFile file, ResourceType type) {
-            FileMetaData meta = storeFileFromOtherEntity(file, type);
-            FileMetaDataResponse response = FileMetaDataResponse.builder()
-                    .id(meta.getId())
-                    .filePath(meta.getFilePath())
-                    .fileName(meta.getFileName())
-                    .fileType(meta.getFileType())
-                    .fileSize(meta.getFileSize())
-                    .relationId(meta.getRelationId())
-                    .relationType(meta.getRelationType())
-                    .build();
-            return new ApiResponseClass("Photo uploaded successfully", HttpStatus.OK, LocalDateTime.now(),response);
+        FileMetaData meta = storeFileFromOtherEntity(file, type);
+        FileMetaDataResponse response = FileMetaDataResponse.builder()
+                .id(meta.getId())
+                .filePath(meta.getFilePath())
+                .fileName(meta.getFileName())
+                .fileType(meta.getFileType())
+                .fileSize(meta.getFileSize())
+                .relationId(meta.getRelationId())
+                .relationType(meta.getRelationType())
+                .build();
+        return new ApiResponseClass("Photo uploaded successfully", HttpStatus.OK, LocalDateTime.now(),response);
     }
 
-        private static final SecureRandom random = new SecureRandom();
-        private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-        public static String generateRandomString(int length) {
-            StringBuilder sb = new StringBuilder(length);
-            for (int i = 0; i < length; i++) {
-                int index = random.nextInt(characters.length());
-                sb.append(characters.charAt(index));
-            }
-            return sb.toString();
-        }
+//    private static final SecureRandom random = new SecureRandom();
+//    private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+//
+//    public static String generateRandomString(int length) {
+//        StringBuilder sb = new StringBuilder(length);
+//        for (int i = 0; i < length; i++) {
+//            int index = random.nextInt(characters.length());
+//            sb.append(characters.charAt(index));
+//        }
+//        return sb.toString();
+//    }
 
 
     @Transactional
@@ -110,6 +110,10 @@ public class FileStorageService {
 
             String  server = serverProperties.getAddress().toString();
             String port = serverProperties.getPort().toString();
+            System.out.println(server);
+
+
+            System.out.println(server + "/"+port);
 
             if (Objects.equals(server, "localhost/127.0.0.1")
                     && Objects.equals(port,"3010")
@@ -119,9 +123,20 @@ public class FileStorageService {
                 String[] dirParts = uploadDir.split("/");
                 String publicDir = dirParts[dirParts.length-1];
                 meta.setFilePath(localhost+":"+port+ "/"+publicDir + "/"+  fileName);
-                System.out.println(server + "/"+port);
+                // System.out.println(server + "/"+port);
+            }
+
+            if (Objects.equals(server, "localhost/127.0.0.1")
+                    && Objects.equals(port,"8088")
+            ){
+                String[] dirParts = uploadDir.split("/");
+                String publicDir = dirParts[dirParts.length-1];
+                meta.setFilePath("rideshare.devscape.online"+"/" +publicDir +"/"+ fileName );
+                // System.out.println(server + "/"+port);
             }
             fileMetaDataRepository.save(meta);
+            // System.out.println(meta.getFilePath);
+
 
             return  FileMetaData.builder()
                     .id(meta.getId())
@@ -180,7 +195,7 @@ public class FileStorageService {
                 .filePath(metaData.getFilePath())
                 .relationId(metaData.getRelationId())
                 .relationType(metaData.getRelationType())
-                    .build();
+                .build();
 
     }
 
