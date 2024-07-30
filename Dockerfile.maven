@@ -1,5 +1,5 @@
 # Use a lightweight base image
-FROM maven:3
+FROM alpine:latest
 
 # Install required packages
 RUN apk add --no-cache openjdk17-jre maven 
