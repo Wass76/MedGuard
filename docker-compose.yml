@@ -28,11 +28,11 @@ version: '3.8'
 
 services:
   maven:
-    build: ./maven
+    build: ./dockerfile.maven
     container_name: maven
 
   app:
-    build: ./openjdk
+    build: ./dockerfile.openjdk
     container_name: app
     ports:
       - "8080:8080"
@@ -40,7 +40,7 @@ services:
       - db
 
   db:
-    build: ./postgres
+    build: ./dockerfile.psql
     container_name: db
     ports:
       - "5432:5432"
