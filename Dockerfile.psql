@@ -1,0 +1,9 @@
+# Use the official PostgreSQL image
+FROM postgres:latest
+
+# Set the PostgreSQL user and password (replace with your credentials)
+ENV POSTGRES_USER=Wassem
+ENV POSTGRES_PASSWORD=password
+
+# Create the database (optional)
+RUN psql -U postgres -c "CREATE DATABASE careemsystem;"
