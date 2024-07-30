@@ -6,7 +6,7 @@ spring:
   application:
     name: CareemSystem
   datasource:
-    url: jdbc:postgresql://localhost:5495/careemsystem
+    url: jdbc:postgresql://localhost:5432/careemsystem
     username: Wassem
     password: password
     driver-class-name: org.postgresql.Driver

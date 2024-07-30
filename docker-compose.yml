@@ -32,17 +32,17 @@ services:
       POSTGRES_PASSWORD: password
       PGDATA: /var/lib/postgresql/data
     ports:
-      - "5495:5432"
+      - "5432:5432"
     networks:
       - db
     restart: unless-stopped
-  postgis-installer:
-    image: postgres:latest  # Use the same image as your database
-    command: ["sh", "-c", "while ! pg_isready -h db -U postgres -d postgres; do sleep 1; done; su - postgres -c \"psql -c \\\"CREATE EXTENSION postgis;\\\"\""]  # Wait for DB & install PostGIS
-    depends_on:
-      - db  # This service depends on the database service being up
-    networks:
-      - db
+  # postgis-installer:
+  #   image: postgres:latest  # Use the same image as your database
+  #   command: ["sh", "-c", "while ! pg_isready -h db -U postgres -d postgres; do sleep 1; done; su - postgres -c \"psql -c \\\"CREATE EXTENSION postgis;\\\"\""]  # Wait for DB & install PostGIS
+  #   depends_on:
+  #     - db  # This service depends on the database service being up
+  #   networks:
+  #     - db
 
 networks:
   db:
