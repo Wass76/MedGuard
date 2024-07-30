@@ -11,9 +11,15 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - db
-    restart: unless-stopped
+      - app-db
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      - app-db
 
 networks:
-  db:
+  app-db:
     driver: bridge
