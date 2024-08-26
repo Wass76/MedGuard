@@ -1,17 +1,20 @@
-# version: '3.8'
+ version: '3.8'
 
-# services:
-#   db:
-#     image: postgres:latest
-#     container_name: careem-system-db
-#     environment:
-#       POSTGRES_USER: Wassem
-#       POSTGRES_PASSWORD: password
-#       PGDATA: /var/lib/postgresql/data
-#     ports:
-#       - "5432:5432"
-#     networks:
-#       - app-db
+ services:
+   db:
+     image: postgres:latest
+     container_name: careem-system
+     environment:
+       POSTGRES_USER: Wassem
+       POSTGRES_PASSWORD: password
+       POSTGRES_DATABASE: careemsystem
+       PGDATA: /var/lib/postgresql/data
+     ports:
+       - "5495:5432"
+     restart: unless-stopped
+
+
+
 
 #   app:
 #     build: .
@@ -19,31 +22,31 @@
 #       - "8080:8080"
 #     networks:
 #       - app-db
-
+#
 # networks:
 #   app-db:
 #     driver: bridge
-
-version: '3.8'
-
-services:
-  maven:
-    build: ./Dockerfile.maven
-    container_name: maven
-
-  app:
-    build: ./Dockerfile.openjdk
-    container_name: app
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-
-  db:
-    build: ./Dockerfile.psql
-    container_name: db
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: Wassem
-      POSTGRES_PASSWORD: password
+#
+#version: '3.8'
+#
+#services:
+#  maven:
+#    build: ./Dockerfile.maven
+#    container_name: maven
+#
+#  app:
+#    build: ./Dockerfile.openjdk
+#    container_name: app
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - db
+#
+#  db:
+#    build: ./Dockerfile.psql
+#    container_name: db
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      POSTGRES_USER: Wassem
+#      POSTGRES_PASSWORD: password

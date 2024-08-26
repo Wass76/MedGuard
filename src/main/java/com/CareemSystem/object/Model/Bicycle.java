@@ -26,7 +26,7 @@ public class Bicycle {
             allocationSize = 1
     )
     private Integer id;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     private ModelPrice model_price;
     private BicycleCategory type;
     private Integer size;

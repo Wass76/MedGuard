@@ -11,21 +11,16 @@ import java.time.LocalDateTime;
 @Data
 public class ReservationRequest {
 
-//    private Integer clientId;
     private Integer bicycleId;
     private Integer fromHubId;
     private Integer toHubId;
-    private Double duration;
+    private double duration;
 
 //    @FutureOrPresent(message = "Couldn't do it")
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private LocalDateTime startTime;
 
-//    @FutureOrPresent(message = "Couldn't do it")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    private LocalDateTime endTime;
-
-    private String reservationStatus;
+//    private String reservationStatus;
     private PaymentMethod paymentMethod;
 
 

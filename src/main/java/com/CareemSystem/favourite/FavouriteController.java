@@ -40,9 +40,9 @@ public class FavouriteController {
         return ResponseEntity.status(HttpStatus.OK).body(favouriteService.getFavouritesById(id));
     }
 
-    @GetMapping("by-clientId/{clientId}")
+    @GetMapping("clientFavourite")
     @Operation(
-            description = "Get favourite item by client id from our system",
+            description = "Get my favourite items as a client from our system",
             summary = "Get favourite items for user",
             responses = {
                     @ApiResponse(
@@ -55,8 +55,8 @@ public class FavouriteController {
                     )
             }
     )
-    public ResponseEntity<?> getFavouriteByClientId(@PathVariable Integer clientId) {
-        return ResponseEntity.status(HttpStatus.OK).body(favouriteService.getFavouritesByClient(clientId));
+    public ResponseEntity<?> getFavouriteByClientId() {
+        return ResponseEntity.status(HttpStatus.OK).body(favouriteService.getFavouritesByClient());
     }
     @GetMapping("by-favouriteId/{bicycleId}")
     @Operation(

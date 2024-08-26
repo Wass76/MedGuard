@@ -4,6 +4,7 @@ import com.CareemSystem.Response.ApiResponseClass;
 import com.CareemSystem.reservation.Model.Reservation;
 import com.CareemSystem.reservation.Request.ReservationRequest;
 import com.CareemSystem.reservation.Service.ReservationService;
+import com.CareemSystem.wallet.Request.PaymentRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -70,7 +71,7 @@ public class ReservationController {
         return reservationService.getAllReservationsByClientId(id);
     }
 
-    @PostMapping
+    @PostMapping()
     @Operation(
             description = "This endpoint build to Create new reservation to our system",
             summary = "Create new reservation",
@@ -81,8 +82,8 @@ public class ReservationController {
                     )
             }
     )
-    public ApiResponseClass createReservation(@RequestBody ReservationRequest request, Principal principal) {
-        return reservationService.createReservation(request,principal);
+    public ApiResponseClass createReservation(@RequestBody ReservationRequest request) {
+        return reservationService.createReservation(request);
     }
 
     @PutMapping("/update-to-during-Reservation/{id}")
@@ -130,6 +131,12 @@ public class ReservationController {
     )
     public ApiResponseClass deleteReservation(@PathVariable Integer id) {
         return reservationService.deleteReservation(id);
+    }
+
+    @PostMapping("reseravation-payment")
+    public ApiResponseClass payment(@RequestBody PaymentRequest request) {
+        return reservationService.payForReservation(request);
+
     }
 
 

@@ -15,6 +15,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.nio.file.Path;
@@ -25,6 +26,7 @@ import java.util.random.RandomGenerator;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
+@EnableScheduling
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class CareemSystemApplication implements CommandLineRunner {
@@ -59,19 +61,19 @@ public class CareemSystemApplication implements CommandLineRunner {
 					.build();
 			policyRepository.save(policy);
 		}
-		MoneyCode moneyCode= MoneyCode.builder()
-				.code("Wassem" + new Random().nextInt(10000))
-				.balance(200000.0)
-				.valid(true)
-				.build();
-		MoneyCode moneyCode2= MoneyCode.builder()
-				.code("Abd-alaziz" + new Random().nextInt(10000))
-				.balance(50000.0)
-				.valid(true)
-				.build();
-
-		moneyCodeRepository.save(moneyCode);
-		moneyCodeRepository.save(moneyCode2);
+//		MoneyCode moneyCode= MoneyCode.builder()
+//				.code("Wassem" + new Random().nextInt(10000))
+//				.balance(200000.0)
+//				.valid(true)
+//				.build();
+//		MoneyCode moneyCode2= MoneyCode.builder()
+//				.code("Abd-alaziz" + new Random().nextInt(10000))
+//				.balance(50000.0)
+//				.valid(true)
+//				.build();
+//
+//		moneyCodeRepository.save(moneyCode);
+//		moneyCodeRepository.save(moneyCode2);
 
 
 //		if(bicycleRepository.findAll().isEmpty()){

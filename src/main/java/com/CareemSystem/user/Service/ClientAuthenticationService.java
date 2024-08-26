@@ -58,10 +58,14 @@ public class ClientAuthenticationService {
         clientRepository.save(client);
         var jwtToken = jwtService.generateToken(client);
         AuthenticationResponse response = AuthenticationResponse.builder()
+                .id(client.getId())
+                .phone(client.getPhone())
+                ._username(client.get_username())
+                .firstName(client.getFirstName())
+                .lastName(client.getLastName())
                 .token(jwtToken)
                 .build();
-        return
-                new ApiResponseClass("Create new account done successfully", HttpStatus.CREATED , LocalDateTime.now(),response);
+        return new ApiResponseClass("Create new account done successfully", HttpStatus.CREATED , LocalDateTime.now(),response);
 
     }
 
@@ -74,6 +78,11 @@ public class ClientAuthenticationService {
         }
         var jwtToken = jwtService.generateToken(user.get());
         AuthenticationResponse response = AuthenticationResponse.builder()
+                .id(user.get().getId())
+                .phone(user.get().getPhone())
+                ._username(user.get().get_username())
+                .firstName(user.get().getFirstName())
+                .lastName(user.get().getLastName())
                 .token(jwtToken)
                 .build();
 

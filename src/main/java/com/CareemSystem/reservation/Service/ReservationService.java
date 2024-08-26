@@ -1,6 +1,8 @@
 package com.CareemSystem.reservation.Service;
 
 import com.CareemSystem.Response.ApiResponseClass;
+import com.CareemSystem.user.Model.BaseUser;
+import com.CareemSystem.utils.Service.UtilsService;
 import com.CareemSystem.utils.Validator.ObjectsValidator;
 import com.CareemSystem.utils.exception.ApiRequestException;
 import com.CareemSystem.hub.Entity.Hub;
@@ -18,21 +20,27 @@ import com.CareemSystem.user.Model.Client;
 import com.CareemSystem.user.Repository.ClientRepository;
 import com.CareemSystem.wallet.Enum.PaymentMethod;
 import com.CareemSystem.wallet.Repository.WalletRepository;
+import com.CareemSystem.wallet.Request.PaymentRequest;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -40,47 +48,89 @@ public class ReservationService {
 
     @Autowired
     private ReservationRepository reservationRepository;
-    private final ClientRepository clientRepository;
-    private final BicycleRepository bicycleRepository;
-    private final HubRepository hubRepository;
-    private final ObjectsValidator<ReservationRequest> validator;
-    private final HubContentRepository hubContentRepository;
-    private final WalletRepository walletRepository;
+    @Autowired
+    private ClientRepository clientRepository;
+    @Autowired
+    private BicycleRepository bicycleRepository;
+    @Autowired
+    private HubRepository hubRepository;
+    @Autowired
+    private ObjectsValidator<ReservationRequest> validator;
+    @Autowired
+    private HubContentRepository hubContentRepository;
+    @Autowired
+    private WalletRepository walletRepository;
+    @Autowired
+    private ObjectsValidator<PaymentRequest> paymentRequestValidator;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public Boolean isOverlappingCheck( Integer duration,
+            LocalDateTime startTime
+//            ReservationRequest request
+    ) {
+        LocalDateTime finishTime = startTime.plusHours(duration);
+        System.out.println(duration);
+        System.out.println(finishTime);
+        List<Reservation> overlappingReservations = reservationRepository
+                .findOverlappingReservations(
+                        startTime
+                        , finishTime
+                );
+        if (!overlappingReservations.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
 
     @Transactional
-    public ApiResponseClass createReservation(ReservationRequest request, Principal principal) {
+    public ApiResponseClass createReservation(ReservationRequest request) {
         validator.validate(request);
 
-        Client reservationOwner = (Client) ((UsernamePasswordAuthenticationToken)principal).getPrincipal();
+        var reservationOwner = utilsService.extractCurrentUser();
+        if(reservationOwner instanceof Client) {
 
         Client client = clientRepository.findById(reservationOwner.getId()).orElseThrow(
                 ()-> new ApiRequestException("Client not found"));
+//        if(client.getWallet() == null){
+//            throw new ApiRequestException("YOU DON'T HAVE WALLET, PLEASE CREATE WALLET FIRST");
+//        }
         Bicycle bicycle = bicycleRepository.findById(request.getBicycleId()).orElseThrow(
                 ()-> new ApiRequestException("Bicycle not found"));
         Hub fromHub = hubRepository.findById(request.getFromHubId()).orElseThrow(
-                ()-> new ApiRequestException("FromHub not found"));
+                ()-> new ApiRequestException("Source hub not found"));
         Hub toHub = hubRepository.findById(request.getToHubId()).orElseThrow(
-                ()-> new ApiRequestException("ToHub not found"));
+                ()-> new ApiRequestException("Target hub not found"));
 
 
-        //TODO : check if other reservation exist
-        List<Reservation> overlappingReservations = reservationRepository
-                .findOverlappingReservations(
-                        request.getStartTime()
-                        , request.getEndTime()
-                );
-        if (!overlappingReservations.isEmpty()) {
-            return new ApiResponseClass("Reserved, Try another Time",HttpStatus.BAD_REQUEST,LocalDateTime.now());
-        }
+        //TODO : check if other reservation exist // Done //
+            if (isOverlappingCheck((int)request.getDuration(),request.getStartTime())) {
+                return new ApiResponseClass("Reserved, Try another Time",HttpStatus.BAD_REQUEST,LocalDateTime.now());
+            }
 
         Double reservationPrice = bicycle.getModel_price().getPrice() * request.getDuration();
-        Double walletBalance = client.getWallet().getBalance();
+//        Double walletBalance = client.getWallet().getBalance();
 
-        if(request.getPaymentMethod().equals(PaymentMethod.Wallet)){
-            if(walletBalance < reservationPrice){
-                 throw new ApiRequestException("Not enough wallet, please charge your wallet first then try again");
+        HubContent hubContent = hubContentRepository.findById(request.getFromHubId()).orElseThrow(
+                ()-> new ApiRequestException("Source hubContent not found")
+        );
+        Bicycle bicycleInSource = null;
+        for (Bicycle b1 : hubContent.getBicycles()){
+            if(b1.getId().equals(request.getBicycleId())){
+                bicycleInSource = b1;
+                break;
             }
         }
+        if(bicycleInSource == null){
+            throw new ApiRequestException("Bicycle not found in source");
+        }
+
+
+//        if(request.getPaymentMethod().equals(PaymentMethod.Wallet)){
+//            if(walletBalance < reservationPrice){
+//                throw new ApiRequestException("Not enough wallet, please charge your wallet first then try again");
+//            }
+//        }
 
         Reservation reservation = Reservation.builder()
                 .client(client)
@@ -88,18 +138,19 @@ public class ReservationService {
                 .from(fromHub)
                 .to(toHub)
                 .startTime(request.getStartTime())
-                .endTime(request.getEndTime())
+                .endTime(null)
                 .duration(request.getDuration())
-                .reservationStatus(ReservationStatus.NOT_STARTED)
+                .reservationStatus(ReservationStatus.PENDING)
+                .paymentMethod(PaymentMethod.Wallet)
                 .build();
 
         reservationRepository.save(reservation);
 
 
-        client.getWallet().setBalance(walletBalance - reservationPrice);
-        walletRepository.save(client.getWallet());
-        clientRepository.save(client);
-        System.out.println(client.getWallet().getBalance());
+//        client.getWallet().setBalance(walletBalance - reservationPrice);
+//        walletRepository.save(client.getWallet());
+//        clientRepository.save(client);
+//        System.out.println(client.getWallet().getBalance());
 
         ReservationResponse response = ReservationResponse.builder()
                 .id(reservation.getId())
@@ -110,12 +161,19 @@ public class ReservationService {
                 .startTime(reservation.getStartTime())
                 .endTime(reservation.getEndTime())
                 .duration(reservation.getDuration())
-                .reservationStatus(reservation.getReservationStatus().name())
+                .reservationStatus(String.valueOf(reservation.getReservationStatus()))
                 .price(reservationPrice)
                 .build();
 
-        return new ApiResponseClass("Reservation created successfully", HttpStatus.CREATED, LocalDateTime.now(),response);
+        return new ApiResponseClass("Reservation created, but now it's in PENDING status, Complete payment processing to confirm your reservation", HttpStatus.CREATED, LocalDateTime.now(),response);
     }
+        else {
+            throw new ApiRequestException("This account not a client account " + reservationOwner.get_username());
+        }
+    }
+
+    @Autowired
+    private UtilsService utilsService;
 
     @Transactional
     public ApiResponseClass updateReservationToDuringReservation(Integer id) {
@@ -123,24 +181,37 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(id).orElseThrow(
                 ()-> new ApiRequestException("Reservation not found")
         );
+        if(!(reservation.getReservationStatus().equals(ReservationStatus.NOT_STARTED))){
+            throw new ApiRequestException("Reservation not confirmed yet");
+        }
         reservation.setReservationStatus(ReservationStatus.DURING_RESERVATION);
         reservationRepository.save(reservation);
-        HubContent hubContentFrom = hubContentRepository.findByHubId(reservation.getFrom().getId()).orElseThrow(
-                ()-> new ApiRequestException("hub not found")
-        );
-        HubContent hubContentTo = hubContentRepository.findByHubId(reservation.getTo().getId()).orElseThrow(
-                ()-> new ApiRequestException("hub not found")
-        );
-        List<Bicycle> bicycleListFrom = hubContentFrom.getBicycles();
-        for (Bicycle bicycle : bicycleListFrom) {
-            if(bicycle.getId().equals(reservation.getBicycle().getId())) {
-                hubContentFrom.getBicycles().remove(bicycle);
-                hubContentTo.getBicycles().add(bicycle);
-            }
-        }
+        reservationRepository.flush();
 
-        hubContentRepository.save(hubContentFrom);
-        hubContentRepository.save(hubContentTo);
+    // Transfer bicycle from source hub to destination hub
+        HubContent sourceHubContent = hubContentRepository.findByHubId(reservation.getFrom().getId()).orElseThrow(
+                ()-> new ApiRequestException("source hub not found")
+        );
+        HubContent targetHubContent = hubContentRepository.findByHubId(reservation.getTo().getId()).orElseThrow(
+                ()-> new ApiRequestException("destination hub not found")
+        );
+
+        Bicycle bicycleToMove = sourceHubContent.getBicycles().stream()
+                .filter(b -> b.getId().equals(reservation.getBicycle().getId()))
+                .findFirst()
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Bicycle not found in source hub: " + reservation.getFrom().getName())
+                );
+//        System.out.println(bicycleToMove.getId());
+
+        // Remove the Bicycle from the source HubContent
+        reservation.setBicycle(null);
+        sourceHubContent.getBicycles().remove(bicycleToMove);
+        targetHubContent.getBicycles().add(bicycleToMove);
+        reservation.setBicycle(bicycleToMove);
+        reservationRepository.save(reservation);
+        hubContentRepository.save(sourceHubContent);
+        hubContentRepository.save(targetHubContent);
 
         ReservationResponse response = ReservationResponse.builder()
                 .id(reservation.getId())
@@ -159,8 +230,38 @@ public class ReservationService {
     @Transactional
     public ApiResponseClass updateReservationToFinished(Integer id) {
         Reservation reservation = reservationRepository.findById(id).orElseThrow(()-> new ApiRequestException("Reservation not found"));
+
+        if(! ((reservation.getReservationStatus().equals(ReservationStatus.NOT_STARTED)) || (reservation.getReservationStatus().equals(ReservationStatus.DURING_RESERVATION)) )){
+            throw new ApiRequestException("Reservation not confirmed yet");
+        }
         reservation.setReservationStatus(ReservationStatus.FINISHED);
+        reservation.setEndTime(LocalDateTime.now());
         reservationRepository.save(reservation);
+
+        HubContent sourceHubContent = hubContentRepository.findByHubId(reservation.getFrom().getId()).orElseThrow(
+                ()-> new ApiRequestException("source hub not found")
+        );
+        HubContent targetHubContent = hubContentRepository.findByHubId(reservation.getTo().getId()).orElseThrow(
+                ()-> new ApiRequestException("destination hub not found")
+        );
+
+        Bicycle bicycleToMove = sourceHubContent.getBicycles().stream()
+                .filter(b -> b.getId().equals(reservation.getBicycle().getId()))
+                .findFirst()
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Bicycle not found in source hub: " + reservation.getFrom().getName())
+                );
+//        System.out.println(bicycleToMove.getId());
+
+        // Remove the Bicycle from the source HubContent
+        reservation.setBicycle(null);
+        sourceHubContent.getBicycles().remove(bicycleToMove);
+        targetHubContent.getBicycles().add(bicycleToMove);
+        reservation.setBicycle(bicycleToMove);
+        reservationRepository.save(reservation);
+        hubContentRepository.save(sourceHubContent);
+        hubContentRepository.save(targetHubContent);
+
         ReservationResponse response = ReservationResponse.builder()
                 .id(reservation.getId())
                 .client(reservation.getClient().get_username())
@@ -274,6 +375,65 @@ public class ReservationService {
         }
 
         return new ApiResponseClass("Reservation Cancelled successfully", HttpStatus.OK, LocalDateTime.now());
+    }
+
+
+    public ApiResponseClass payForReservation(PaymentRequest request) {
+        BaseUser reservationOwner = utilsService.extractCurrentUser();
+        if(!(reservationOwner instanceof Client)){
+            throw new ApiRequestException("YOU ARE NOT A CLIENT AND NOT SUPPORTED TO RESERVATION");
+        }
+        Client client = clientRepository.findById(reservationOwner.getId()).orElseThrow(
+                ()-> new ApiRequestException("Client not found")
+        );
+        paymentRequestValidator.validate(request);
+        Reservation reservation = reservationRepository.findById(request.getReservationID()).orElseThrow(
+                ()-> new ApiRequestException("reservation not found with ID: " + request.getReservationID())
+        );
+
+        if(client.getWallet() == null){
+            throw new ApiRequestException("YOU DON'T HAVE WALLET, PLEASE CREATE WALLET FIRST");
+        }
+
+//        if (isOverlappingCheck((int) reservation.getDuration() , reservation.getStartTime()))
+//            throw new ApiRequestException("SORRY, THIS BICYCLE BOOKED BEFORE YOU SUBMIT YOUR BOOKING");
+
+//        if((!Objects.equals(request.getWalletPassword(), client.getWallet().getSecurityCode()))){
+//            throw new AuthorizationServiceException("UnAuthorize process, password not correct");
+//        }
+
+        if(!passwordEncoder.matches(request.getWalletPassword(), client.getWallet().getSecurityCode())){
+            throw new AuthorizationServiceException("UnAuthorize process, password not correct");
+        }
+
+        Double reservationPrice = reservation.getBicycle().getModel_price().getPrice() * reservation.getDuration();
+        Double walletBalance = client.getWallet().getBalance();
+
+        if(reservation.getPaymentMethod().equals(PaymentMethod.Wallet)){
+            if(walletBalance < reservationPrice){
+                throw new ApiRequestException("Not enough wallet, please charge your wallet first then try again");
+            }
+        }
+        client.getWallet().setBalance(walletBalance - reservationPrice);
+        reservation.setReservationStatus(ReservationStatus.NOT_STARTED);
+        walletRepository.save(client.getWallet());
+        clientRepository.save(client);
+        System.out.println(client.getWallet().getBalance());
+        reservationRepository.save(reservation);
+
+        ReservationResponse response = ReservationResponse.builder()
+                .id(reservation.getId())
+                .client(reservation.getClient().get_username())
+                .bicycle(reservation.getBicycle().getModel_price().getModel())
+                .from(reservation.getFrom().getName())
+                .to(reservation.getTo().getName())
+                .startTime(reservation.getStartTime())
+                .endTime(reservation.getEndTime())
+                .duration(reservation.getDuration())
+                .reservationStatus(reservation.getReservationStatus().name())
+                .price(reservationPrice)
+                .build();
+        return new ApiResponseClass("Your reservation has been confirmed successfully", HttpStatus.ACCEPTED, LocalDateTime.now(),response);
     }
 
 }

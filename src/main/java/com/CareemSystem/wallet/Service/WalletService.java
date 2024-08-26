@@ -1,21 +1,32 @@
 package com.CareemSystem.wallet.Service;
 
 import com.CareemSystem.Response.ApiResponseClass;
+import com.CareemSystem.reservation.Enum.ReservationStatus;
+import com.CareemSystem.reservation.Model.Reservation;
+import com.CareemSystem.reservation.Repository.ReservationRepository;
+import com.CareemSystem.reservation.Response.ReservationResponse;
+import com.CareemSystem.user.Model.BaseUser;
+import com.CareemSystem.user.Model.Client;
+import com.CareemSystem.utils.Service.UtilsService;
 import com.CareemSystem.utils.Validator.ObjectsValidator;
 import com.CareemSystem.user.Repository.ClientRepository;
 import com.CareemSystem.utils.exception.ApiRequestException;
+import com.CareemSystem.wallet.Enum.PaymentMethod;
 import com.CareemSystem.wallet.Model.MoneyCode;
 import com.CareemSystem.wallet.Model.Wallet;
 import com.CareemSystem.wallet.Repository.MoneyCodeRepository;
 import com.CareemSystem.wallet.Repository.WalletRepository;
 import com.CareemSystem.wallet.Request.CreateWalletRequest;
 import com.CareemSystem.wallet.Request.MoneyCodeRequest;
+import com.CareemSystem.wallet.Request.PaymentRequest;
 import com.CareemSystem.wallet.Response.MoneyCodeResponse;
 import com.CareemSystem.wallet.Response.WalletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +35,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +48,16 @@ public class WalletService {
     private MoneyCodeRepository moneyCodeRepository;
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private UtilsService utilsService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private ObjectsValidator<CreateWalletRequest> createWalletValidator;
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     @Transactional
     public ApiResponseClass CreateMyWallet(CreateWalletRequest request) {
@@ -73,6 +90,23 @@ public class WalletService {
 //
 //        }
 
+    }
+
+    @Scheduled(timeUnit = TimeUnit.MINUTES , fixedRate = 30)
+    public void createNewCodes(){
+        MoneyCode moneyCode= MoneyCode.builder()
+                .code("Wassem" + LocalDateTime.now())
+                .balance(200000.0)
+                .valid(true)
+                .build();
+        MoneyCode moneyCode2= MoneyCode.builder()
+                .code("Abd-alaziz" + LocalDateTime.now())
+                .balance(50000.0)
+                .valid(true)
+                .build();
+
+        moneyCodeRepository.save(moneyCode);
+        moneyCodeRepository.save(moneyCode2);
     }
 
     @Transactional

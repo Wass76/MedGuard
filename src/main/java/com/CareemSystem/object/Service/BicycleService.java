@@ -98,7 +98,6 @@ public class BicycleService {
                 .model(request.getModel_price().getModelName())
                 .price(request.getModel_price().getPrice())
                 .build();
-        modelPriceRepository.save(modelPrice);
 
 
         Bicycle bicycle = Bicycle.builder()
@@ -111,6 +110,8 @@ public class BicycleService {
 
         FileMetaData bicyclePhoto = fileStorageService.storeFileFromOtherEntity(request.getPhoto(), ResourceType.Bicycle);
         bicycle.setPhoto_id(bicyclePhoto.getId());
+
+        modelPriceRepository.save(modelPrice);
         bicycleRepository.save(bicycle);
 
         BicycleResponse response = BicycleResponse.builder()
