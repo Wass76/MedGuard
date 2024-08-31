@@ -92,7 +92,7 @@ public class WalletService {
 
     }
 
-    @Scheduled(timeUnit = TimeUnit.MINUTES , fixedRate = 30)
+//    @Scheduled(timeUnit = TimeUnit.MINUTES , fixedRate = 30)
     public void createNewCodes(){
         MoneyCode moneyCode= MoneyCode.builder()
                 .code("Wassem" + LocalDateTime.now())
