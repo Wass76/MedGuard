@@ -14,5 +14,7 @@ public interface FavouriteRepository extends JpaRepository<Favourite, Integer> {
 
     List<Favourite> findFavouriteByBicycleId(Integer bicycleId);
 
+   Optional<Favourite> findByClientIdAndBicycleId(Integer clientId, Integer bicycleId);
+
 //    Optional<Favourite> findFavouriteBy(Integer id);
 }

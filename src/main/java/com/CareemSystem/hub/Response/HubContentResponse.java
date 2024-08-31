@@ -1,6 +1,7 @@
 package com.CareemSystem.hub.Response;
 
 import com.CareemSystem.object.Model.Bicycle;
+import com.CareemSystem.object.Response.ClientBicycleResponse;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,6 +13,6 @@ public class HubContentResponse {
 
     private Integer id;
     private Integer hubId;
-    private List<Bicycle> bicycleList;
+    private List<ClientBicycleResponse> bicycleList;
     private String note;
 }

@@ -30,9 +30,9 @@ public class Favourite {
     )
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER , cascade = CascadeType.PERSIST)
     private Bicycle bicycle;
 
-    @ManyToOne(fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER , cascade = CascadeType.PERSIST)
     private Client client;
 }

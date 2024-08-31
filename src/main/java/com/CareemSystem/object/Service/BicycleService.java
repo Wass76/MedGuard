@@ -1,6 +1,8 @@
 package com.CareemSystem.object.Service;
 
 import com.CareemSystem.Response.ApiResponseClass;
+import com.CareemSystem.favourite.Favourite;
+import com.CareemSystem.favourite.FavouriteRepository;
 import com.CareemSystem.object.Enum.BicycleCategory;
 import com.CareemSystem.object.Model.Bicycle;
 import com.CareemSystem.object.Model.ModelPrice;
@@ -8,13 +10,17 @@ import com.CareemSystem.object.Repository.BicycleRepository;
 import com.CareemSystem.object.Repository.ModelPriceRepository;
 import com.CareemSystem.object.Request.BicycleRequest;
 import com.CareemSystem.object.Response.BicycleResponse;
+import com.CareemSystem.object.Response.ClientBicycleResponse;
 import com.CareemSystem.resource.Enum.ResourceType;
 import com.CareemSystem.resource.Model.FileMetaData;
 import com.CareemSystem.resource.Repository.FileMetaDataRepository;
 import com.CareemSystem.resource.service.FileStorageService;
+import com.CareemSystem.user.Model.Client;
+import com.CareemSystem.utils.Service.UtilsService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,55 +35,90 @@ public class BicycleService {
     private final ModelPriceRepository modelPriceRepository;
     private final FileStorageService fileStorageService;
     private final FileMetaDataRepository fileMetaDataRepository;
+    private final UtilsService utilsService;
+    private final FavouriteRepository favouriteRepository;
 
-    public ApiResponseClass getAllObjects(){
-       List<Bicycle> bicycleList = bicycleRepository.findAll();
-       List<BicycleResponse> responseList = new ArrayList<>();
-       for (Bicycle bicycle : bicycleList) {
-           responseList.add(BicycleResponse.builder()
-                   .id(bicycle.getId())
-                   .type(bicycle.getType().toString())
-                   .size(bicycle.getSize())
-                   .photoPath(fileMetaDataRepository.findById(bicycle.getPhoto_id()).get().getFilePath())
-                   .note(bicycle.getNote())
-                   .model_price(bicycle.getModel_price())
-                   .maintenance(bicycle.getMaintenance())
-                   .build());
-       }
-       return new ApiResponseClass("Get all objects done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now(),responseList);
+    public Boolean isFavourite(Bicycle bicycle) {
+        var client = utilsService.extractCurrentUser();
+        if(client instanceof Client) {
+            Integer clientId = client.getId();
+            Favourite favourite = favouriteRepository.findByClientIdAndBicycleId(clientId, bicycle.getId())
+                    .orElse(null);
+            return favourite != null;
+        }
+        else
+            throw new AuthorizationServiceException("User is not a client");
     }
-    public ApiResponseClass getObjectById(int id){
-        Bicycle bicycle = bicycleRepository.findById(id).orElseThrow(
-                ()-> new RuntimeException("Bicycle with id: " + id + "not found")
-        );
-        BicycleResponse response = BicycleResponse.builder()
+
+    public ClientBicycleResponse extractToClientResponse(Bicycle bicycle) {
+        return ClientBicycleResponse.builder()
                 .id(bicycle.getId())
                 .type(bicycle.getType().toString())
                 .size(bicycle.getSize())
                 .photoPath(fileMetaDataRepository.findById(bicycle.getPhoto_id()).get().getFilePath())
                 .note(bicycle.getNote())
-//                .category(bicycle.getCategory().toString())
                 .model_price(bicycle.getModel_price())
                 .maintenance(bicycle.getMaintenance())
+                .isFavourite(isFavourite(bicycle))
                 .build();
-        return new ApiResponseClass("Get object by id" , HttpStatus.ACCEPTED , LocalDateTime.now(),response);
+//        return response;
     }
 
-    public ApiResponseClass getObjectByCategory(String name){
-        List<Bicycle> bicycleList = bicycleRepository.findBicycleByType(BicycleCategory.valueOf(name));
+    public ApiResponseClass getAllBicyclesForClient(){
+       List<Bicycle> bicycleList = bicycleRepository.findAll();
+       List<ClientBicycleResponse> responseList = new ArrayList<>();
+       for (Bicycle bicycle : bicycleList) {
+           responseList.add(extractToClientResponse(bicycle));
+       }
+       return new ApiResponseClass("Get all objects done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now(),responseList);
+    }
+    public ApiResponseClass getAllBicyclesForManager () {
+        List<Bicycle> bicycleList = bicycleRepository.findAll();
         List<BicycleResponse> responseList = new ArrayList<>();
-
         for (Bicycle bicycle : bicycleList) {
             responseList.add(BicycleResponse.builder()
                     .id(bicycle.getId())
                     .type(bicycle.getType().toString())
                     .size(bicycle.getSize())
                     .photoPath(fileMetaDataRepository.findById(bicycle.getPhoto_id()).get().getFilePath())
-//                    .category(bicycle.getType().toString())
                     .note(bicycle.getNote())
                     .model_price(bicycle.getModel_price())
                     .maintenance(bicycle.getMaintenance())
                     .build());
+        }
+        return new ApiResponseClass("Get all objects done successfully" , HttpStatus.ACCEPTED , LocalDateTime.now(),responseList);
+
+    }
+    public ApiResponseClass getBicycleByIdForClient(int id){
+        Bicycle bicycle = bicycleRepository.findById(id).orElseThrow(
+                ()-> new RuntimeException("Bicycle with id: " + id + "not found")
+        );
+        ClientBicycleResponse response = extractToClientResponse(bicycle);
+        return new ApiResponseClass("Get object by id" , HttpStatus.ACCEPTED , LocalDateTime.now(),response);
+    }
+    public ApiResponseClass getBicycleByIdForManager(int id){
+        Bicycle bicycle = bicycleRepository.findById(id).orElseThrow(
+                ()-> new RuntimeException("Bicycle with id: " + id + "not found")
+        );
+        ClientBicycleResponse response = ClientBicycleResponse.builder()
+                .id(bicycle.getId())
+                .type(bicycle.getType().toString())
+                .size(bicycle.getSize())
+                .photoPath(fileMetaDataRepository.findById(bicycle.getPhoto_id()).get().getFilePath())
+                .note(bicycle.getNote())
+                .model_price(bicycle.getModel_price())
+                .maintenance(bicycle.getMaintenance())
+                .isFavourite(isFavourite(bicycle))
+                .build();
+        return new ApiResponseClass("Get bicycle by id" , HttpStatus.ACCEPTED , LocalDateTime.now(),response);
+    }
+
+    public ApiResponseClass getBicycleByCategoryForClient(String name){
+        List<Bicycle> bicycleList = bicycleRepository.findBicycleByType(BicycleCategory.valueOf(name));
+        List<ClientBicycleResponse> responseList = new ArrayList<>();
+
+        for (Bicycle bicycle : bicycleList) {
+            responseList.add(extractToClientResponse(bicycle));
         }
         return new ApiResponseClass("Get bicycles by category" , HttpStatus.ACCEPTED , LocalDateTime.now(),responseList);
 

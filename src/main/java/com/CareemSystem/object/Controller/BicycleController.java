@@ -5,14 +5,12 @@ import com.CareemSystem.object.Service.BicycleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jdk.jfr.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 
 @RestController
@@ -36,7 +34,7 @@ public class BicycleController {
     )
     public ResponseEntity<?>getAllBicycles() {
         return ResponseEntity
-                .ok( bicycleService.getAllObjects());
+                .ok( bicycleService.getAllBicyclesForClient());
     }
     @GetMapping("{id}")
     @Operation(
@@ -51,7 +49,7 @@ public class BicycleController {
     )
     public ResponseEntity<?> getBicycleById(@PathVariable Integer id) {
         return ResponseEntity
-                .ok( bicycleService.getObjectById(id));
+                .ok( bicycleService.getBicycleByIdForClient(id));
     }
     @GetMapping("bicycles-by-category")
     @Operation(
@@ -65,7 +63,7 @@ public class BicycleController {
             }
     )
     public ResponseEntity<?> getBicyclesByCategory(@RequestParam String category) {
-        return ResponseEntity.ok(bicycleService.getObjectByCategory(category));
+        return ResponseEntity.ok(bicycleService.getBicycleByCategoryForClient(category));
     }
     @GetMapping("bicycles-categories")
     @Operation(

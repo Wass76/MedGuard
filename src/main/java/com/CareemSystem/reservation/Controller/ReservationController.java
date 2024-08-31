@@ -116,6 +116,12 @@ public class ReservationController {
     public ApiResponseClass updateReservationToFinished(@PathVariable Integer id){
         return reservationService.updateReservationToFinished(id);
     }
+// TODO: make this endpoint
+//    @GetMapping("My-history")
+//    public ApiResponseClass getReservationByState(){
+//
+//    }
+
     @DeleteMapping("{id}")
     @Operation(
             description = "This endpoint build to Delete reservation by id from our system",

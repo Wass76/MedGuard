@@ -1,6 +1,8 @@
 package com.CareemSystem.favourite;
 
 import com.CareemSystem.Response.ApiResponseClass;
+import com.CareemSystem.object.Response.ClientBicycleResponse;
+import com.CareemSystem.object.Service.BicycleService;
 import com.CareemSystem.utils.Service.UtilsService;
 import com.CareemSystem.utils.Validator.ObjectsValidator;
 import com.CareemSystem.utils.exception.ApiRequestException;
@@ -35,23 +37,14 @@ public class FavouriteService {
     private BicycleRepository bicycleRepository;
     @Autowired
     private UtilsService utilsService;
+    @Autowired
+    private BicycleService bicycleService;
 
-    public ApiResponseClass getFavouritesById(Integer id) {
+    public FavouriteResponse extractClientResponse(Favourite favourite){
 
-        Favourite favourite = favouriteRepository.findById(id).orElseThrow(
-                ()-> new ApiRequestException("Favourite not found with id: " + id)
-        );
+        ClientBicycleResponse bicycleResponse = bicycleService.extractToClientResponse(favourite.getBicycle());
 
-        BicycleResponse bicycle = BicycleResponse.builder()
-                .size(favourite.getBicycle().getSize())
-                .type(String.valueOf(favourite.getBicycle().getType()))
-                .id(favourite.getBicycle().getId())
-                .model_price(favourite.getBicycle().getModel_price())
-                .note(favourite.getBicycle().getNote())
-                .maintenance(favourite.getBicycle().getMaintenance())
-                .build();
-
-        ClientResponse client = ClientResponse.builder()
+        ClientResponse clientResponse = ClientResponse.builder()
                 .firstName(favourite.getClient().getFirstName())
                 .lastName(favourite.getClient().getLastName())
                 .username(favourite.getClient().get_username())
@@ -60,11 +53,20 @@ public class FavouriteService {
                 .birthDate(favourite.getClient().getBirthday())
                 .build();
 
-        FavouriteResponse response = FavouriteResponse.builder()
-                .client(client)
-                .bicycle(bicycle)
+        return FavouriteResponse
+                .builder()
+                .client(clientResponse)
+                .bicycle(bicycleResponse)
                 .id(favourite.getId())
                 .build();
+    }
+
+    public ApiResponseClass getFavouritesById(Integer id) {
+
+        Favourite favourite = favouriteRepository.findById(id).orElseThrow(
+                ()-> new ApiRequestException("Favourite not found with id: " + id)
+        );
+        FavouriteResponse response = extractClientResponse(favourite);
         return new ApiResponseClass("Get favourite done successfully" , HttpStatus.OK , LocalDateTime.now() , response);
     }
 
@@ -81,31 +83,8 @@ public class FavouriteService {
        }
        List <FavouriteResponse> favouriteResponseList = new ArrayList<>();
        for (Favourite favourite : favouriteList) {
-
-           BicycleResponse bicycle = BicycleResponse.builder()
-                   .size(favourite.getBicycle().getSize())
-                   .type(String.valueOf(favourite.getBicycle().getType()))
-                   .id(favourite.getBicycle().getId())
-                   .model_price(favourite.getBicycle().getModel_price())
-                   .note(favourite.getBicycle().getNote())
-                   .maintenance(favourite.getBicycle().getMaintenance())
-                   .build();
-
-           ClientResponse clientResponse = ClientResponse.builder()
-                   .firstName(favourite.getClient().getFirstName())
-                   .lastName(favourite.getClient().getLastName())
-                   .username(favourite.getClient().get_username())
-                   .phoneNumber(favourite.getClient().getPhone())
-                   .id(favourite.getClient().getId())
-                   .birthDate(favourite.getClient().getBirthday())
-                   .build();
-
            favouriteResponseList.add(
-                   FavouriteResponse.builder()
-                           .client(clientResponse)
-                           .bicycle(bicycle)
-                           .id(favourite.getId())
-                           .build()
+                   extractClientResponse(favourite)
            );
        }
        return new ApiResponseClass("Get favourite items For client successfully" , HttpStatus.OK , LocalDateTime.now() , favouriteResponseList);
@@ -119,31 +98,7 @@ public class FavouriteService {
         }
         List <FavouriteResponse> favouriteResponseList = new ArrayList<>();
         for (Favourite favourite : favouriteList) {
-
-            BicycleResponse bicycle = BicycleResponse.builder()
-                    .size(favourite.getBicycle().getSize())
-                    .type(String.valueOf(favourite.getBicycle().getType()))
-                    .id(favourite.getBicycle().getId())
-                    .model_price(favourite.getBicycle().getModel_price())
-                    .note(favourite.getBicycle().getNote())
-                    .maintenance(favourite.getBicycle().getMaintenance())
-                    .build();
-
-            ClientResponse client = ClientResponse.builder()
-                    .firstName(favourite.getClient().getFirstName())
-                    .lastName(favourite.getClient().getLastName())
-                    .username(favourite.getClient().get_username())
-                    .phoneNumber(favourite.getClient().getPhone())
-                    .id(favourite.getClient().getId())
-                    .birthDate(favourite.getClient().getBirthday())
-                    .build();
-
-            favouriteResponseList.add(FavouriteResponse.builder()
-                    .id(favourite.getId())
-                    .client(client)
-                    .bicycle(bicycle)
-                    .build()
-            );
+            favouriteResponseList.add(extractClientResponse(favourite));
         }
         return new ApiResponseClass("Get favourite items by bicycle id done successfully" , HttpStatus.OK , LocalDateTime.now() , favouriteResponseList);
     }
@@ -170,31 +125,7 @@ public class FavouriteService {
                 .build();
         favouriteRepository.save(favourite);
 
-        BicycleResponse bicycleResponse = BicycleResponse.builder()
-                .size(favourite.getBicycle().getSize())
-                .type(String.valueOf(favourite.getBicycle().getType()))
-                .id(favourite.getBicycle().getId())
-                .model_price(favourite.getBicycle().getModel_price())
-                .note(favourite.getBicycle().getNote())
-                .maintenance(favourite.getBicycle().getMaintenance())
-                .build();
-
-        ClientResponse clientResponse = ClientResponse.builder()
-                .firstName(favourite.getClient().getFirstName())
-                .lastName(favourite.getClient().getLastName())
-                .username(favourite.getClient().get_username())
-                .phoneNumber(favourite.getClient().getPhone())
-                .id(favourite.getClient().getId())
-                .birthDate(favourite.getClient().getBirthday())
-                .build();
-
-
-        FavouriteResponse response = FavouriteResponse
-                .builder()
-                .client(clientResponse)
-                .bicycle(bicycleResponse)
-                .id(favourite.getId())
-                .build();
+        FavouriteResponse response = extractClientResponse(favourite);
 
         return new ApiResponseClass("Add new favourite successfully" , HttpStatus.CREATED , LocalDateTime.now() , response);
     }

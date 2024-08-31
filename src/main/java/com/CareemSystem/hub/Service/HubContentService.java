@@ -1,6 +1,8 @@
 package com.CareemSystem.hub.Service;
 
 import com.CareemSystem.Response.ApiResponseClass;
+import com.CareemSystem.object.Response.ClientBicycleResponse;
+import com.CareemSystem.object.Service.BicycleService;
 import com.CareemSystem.utils.Validator.ObjectsValidator;
 import com.CareemSystem.utils.exception.ApiRequestException;
 import com.CareemSystem.hub.Entity.HubContent;
@@ -27,6 +29,22 @@ public class HubContentService {
     private final ObjectsValidator<HubContentRequest> hubContentValidator;
     private final HubRepository hubRepository;
     private final BicycleRepository bicycleRepository;
+    private final BicycleService bicycleService;
+
+    private HubContentResponse extractHubContentResponse(HubContent hubContent) {
+        List<Bicycle> hubBicycles = hubContent.getBicycles();
+        List<ClientBicycleResponse> clientBicycleResponses = new ArrayList<>();
+        for (Bicycle bicycle : hubBicycles) {
+            clientBicycleResponses.add(bicycleService.extractToClientResponse(bicycle));
+        }
+        return HubContentResponse.builder()
+                .id(hubContent.getId())
+                .hubId(hubContent.getHub().getId())
+                .bicycleList(clientBicycleResponses)
+                .note(hubContent.getNote())
+                .build();
+
+    }
 
     public ApiResponseClass getHubContentByHubId(Integer hubId , String category) {
         try {
@@ -40,14 +58,9 @@ public class HubContentService {
         ).orElseThrow(
                 ()-> new ApiRequestException("hub content does not exist, or there is no bicycles with category " +"(" + category + ")" + " in this hub")
         );
-        HubContentResponse hubContentResponse = HubContentResponse.builder()
-                .id(hubContent.getId())
-                .hubId(hubContent.getHub().getId())
-                .bicycleList(hubContent.getBicycles())
-                .note(hubContent.getNote())
-                .build();
+        HubContentResponse response = extractHubContentResponse(hubContent);
 
-        return new ApiResponseClass("Get Hub content by id done successfully" , HttpStatus.OK, LocalDateTime.now(),hubContentResponse);
+        return new ApiResponseClass("Get Hub content by id done successfully" , HttpStatus.OK, LocalDateTime.now(),response);
     }
 
 //    public ApiResponseClass createHubContent( HubContentRequest request) {
@@ -98,15 +111,12 @@ public class HubContentService {
         hubContent.setBicycles(bicycles);
         hubContentRepository.save(hubContent);
 
-        HubContentResponse hubContentResponse = HubContentResponse.builder()
-                .id(hubContent.getId())
-                .hubId(hubContent.getHub().getId())
-                .bicycleList(hubContent.getBicycles())
-                .note(hubContent.getNote())
-                .build();
+        HubContentResponse response = extractHubContentResponse(hubContent);
 
-        return new ApiResponseClass("Update hub content successfully" , HttpStatus.OK, LocalDateTime.now(),hubContentResponse);
+        return new ApiResponseClass("Update hub content successfully" , HttpStatus.OK, LocalDateTime.now(),response );
     }
+
+
 
     public ApiResponseClass deleteHubContent(Integer id) {
             HubContent hubContent = hubContentRepository.findById(id).orElseThrow(
