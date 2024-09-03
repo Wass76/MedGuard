@@ -10,6 +10,6 @@ public interface BicycleRepository extends JpaRepository<Bicycle,Integer> {
 
     List<Bicycle> findBicycleByType(BicycleCategory category);
 
-    List<Bicycle> findBicyclesByDiscountPriceTrue();
+    List<Bicycle> findBicyclesByHasOfferTrue();
 
 }

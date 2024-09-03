@@ -212,7 +212,7 @@ public class BicycleService {
     }
 
     public ApiResponseClass getOfferBicycles(){
-        List<Bicycle> bicycleList = bicycleRepository.findBicyclesByDiscountPriceTrue();
+        List<Bicycle> bicycleList = bicycleRepository.findBicyclesByHasOfferTrue();
         if(bicycleList.isEmpty()){
             return new ApiResponseClass("There is no offers now", HttpStatus.NO_CONTENT , LocalDateTime.now());
         }
