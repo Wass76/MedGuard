@@ -17,6 +17,7 @@ import com.CareemSystem.resource.Repository.FileMetaDataRepository;
 import com.CareemSystem.resource.service.FileStorageService;
 import com.CareemSystem.user.Model.Client;
 import com.CareemSystem.utils.Service.UtilsService;
+import com.CareemSystem.utils.exception.ApiRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -91,7 +92,7 @@ public class BicycleService {
     }
     public ApiResponseClass getBicycleByIdForClient(int id){
         Bicycle bicycle = bicycleRepository.findById(id).orElseThrow(
-                ()-> new RuntimeException("Bicycle with id: " + id + "not found")
+                ()-> new ApiRequestException("Bicycle with id: " + id + "not found")
         );
         ClientBicycleResponse response = extractToClientResponse(bicycle);
         return new ApiResponseClass("Get object by id" , HttpStatus.ACCEPTED , LocalDateTime.now(),response);

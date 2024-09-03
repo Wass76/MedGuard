@@ -408,6 +408,9 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(request.getReservationID()).orElseThrow(
                 ()-> new ApiRequestException("reservation not found with ID: " + request.getReservationID())
         );
+        if(reservation.getReservationStatus().equals(ReservationStatus.NOT_STARTED)){
+            throw new ApiRequestException("Already paid for reservation");
+        }
 
         if(client.getWallet() == null){
             throw new ApiRequestException("YOU DON'T HAVE WALLET, PLEASE CREATE WALLET FIRST");
