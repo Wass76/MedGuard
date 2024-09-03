@@ -216,16 +216,9 @@ public class BicycleService {
         if(bicycleList.isEmpty()){
             return new ApiResponseClass("There is no offers now", HttpStatus.NO_CONTENT , LocalDateTime.now());
         }
-       List<BicycleResponse> response = new ArrayList<>();
+       List<ClientBicycleResponse> response = new ArrayList<>();
         for(Bicycle bicycle : bicycleList){
-            response.add(BicycleResponse.builder()
-                    .id(bicycle.getId())
-                    .type(bicycle.getType().toString())
-                    .size(bicycle.getSize())
-                    .note(bicycle.getNote())
-                    .model_price(bicycle.getModel_price())
-                    .maintenance(bicycle.getMaintenance())
-                    .build());
+            response.add(extractToClientResponse(bicycle));
         }
         return new ApiResponseClass("Get offers", HttpStatus.OK , LocalDateTime.now(),response);
     }
