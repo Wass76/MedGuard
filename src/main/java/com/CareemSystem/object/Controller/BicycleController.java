@@ -110,7 +110,8 @@ public class BicycleController {
                     )
             }
     )
-    public ResponseEntity<?> updateBicycle(@PathVariable Integer id, @RequestBody BicycleRequest request) {
+    public ResponseEntity<?> updateBicycle(@PathVariable Integer id, @RequestPart BicycleRequest request , @RequestPart  MultipartFile file) {
+        request.setPhoto(file);
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
                 .body(bicycleService.updateObject(id, request));
