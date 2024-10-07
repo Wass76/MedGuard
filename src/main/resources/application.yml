@@ -4,9 +4,9 @@ server:
 
 spring:
   application:
-    name: CareemSystem
+    name: RideShare
   datasource:
-    url: jdbc:postgresql://localhost:5495/careemsystem
+    url: jdbc:postgresql://localhost:5436/rideshare
     username: Wassem
     password: password
     driver-class-name: org.postgresql.Driver

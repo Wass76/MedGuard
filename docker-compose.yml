@@ -1,52 +1,31 @@
  version: '3.8'
 
- services:
-   db:
-     image: postgres:latest
-     container_name: careem-system
-     environment:
-       POSTGRES_USER: Wassem
-       POSTGRES_PASSWORD: password
-       POSTGRES_DATABASE: careemsystem
-       PGDATA: /var/lib/postgresql/data
-     ports:
-       - "5495:5432"
-     restart: unless-stopped
-
-
-
-
-#   app:
-#     build: .
+# services:
+#   db:
+#     image: postgres:latest
+#     container_name: careem-system
+#     environment:
+#       POSTGRES_USER: Wassem
+#       POSTGRES_PASSWORD: password
+#       POSTGRES_DATABASE: careemsystem
+#       PGDATA: /var/lib/postgresql/data
 #     ports:
-#       - "8080:8080"
-#     networks:
-#       - app-db
+#       - "5495:5432"
+#     restart: unless-stopped
 #
-# networks:
-#   app-db:
-#     driver: bridge
 #
-#version: '3.8'
-#
-#services:
-#  maven:
-#    build: ./Dockerfile.maven
-#    container_name: maven
-#
-#  app:
-#    build: ./Dockerfile.openjdk
-#    container_name: app
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - db
-#
-#  db:
-#    build: ./Dockerfile.psql
-#    container_name: db
-#    ports:
-#      - "5432:5432"
-#    environment:
-#      POSTGRES_USER: Wassem
-#      POSTGRES_PASSWORD: password
+
+services:
+  rideShare-app:
+    build: .
+    image: rideshare-back
+    container_name: rideshare-backend
+    ports:
+      - "3011:3011"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://rideshare_dp:5432/rideshare
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_DATABASE: rideshare
+    networks:
+        - lighthouse-net
