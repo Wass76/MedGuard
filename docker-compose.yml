@@ -28,4 +28,4 @@ services:
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_DATASOURCE_DATABASE: rideshare
     networks:
-        - lighthouse-net
+        - rideshare-net
