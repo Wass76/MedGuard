@@ -19,7 +19,7 @@ WORKDIR /app
 COPY target/MedGuard-0.0.1-SNAPSHOT.jar /app/MedGuard.jar
 
 # Expose the port your application will run on
-EXPOSE 3101
+EXPOSE 3001
 
 # Define the command to run the application
 ENTRYPOINT ["java", "-jar", "/app/MedGuard.jar", "mvn spring-boot:run"]
