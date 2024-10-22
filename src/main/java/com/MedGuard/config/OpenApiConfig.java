@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                 {
                         @Server(
                                 description = "Prod ENV",
-                                url = "https://rideshare.devscape.online"
+                                url = "http://203.161.44.194:3101"
                         ),
                         @Server(
                                 description = "Local ENV",

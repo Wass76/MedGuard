@@ -6,9 +6,9 @@ spring:
   application:
     name: MedGuard
   datasource:
-#    url: jdbc:postgresql://medguard_dp:5432/medGuard
-    url: jdbc:postgresql://localhost:5495/medguard
-    username: Wassem
+    url: jdbc:postgresql://medguard_dp:5432/medGuard
+#    url: jdbc:postgresql://localhost:5495/medguard
+    username: postgres
     password: password
     driver-class-name: org.postgresql.Driver
   jpa:
