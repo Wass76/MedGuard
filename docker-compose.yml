@@ -22,7 +22,7 @@ services:
     image: medguard
     container_name: medguard-backend
     ports:
-      - "3001:3001"
+      - "50080:3001"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://medguard_dp:5432/medGuard
       SPRING_DATASOURCE_USERNAME: postgres
@@ -39,7 +39,7 @@ services:
     ports:
       - "5437:5432"
     environment:
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: password 
       POSTGRES_DB: medGuard
     networks:
       - medGuard-net
