@@ -14,22 +14,36 @@
 #     restart: unless-stopped
 #
 #
+version: '3.8'
 
 services:
   rideShare-app:
     build: .
-    image: rideshare-back
-    container_name: rideshare-backend
+    image: medguard
+    container_name: medguard-backend
     ports:
-      - "3011:3011"
+      - "3101:3101"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://rideshare_dp:5432/rideshare
+      SPRING_DATASOURCE_URL: jdbc:postgresql://medguard_dp:5432/medGuard
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
-      SPRING_DATASOURCE_DATABASE: rideshare
+      SPRING_DATASOURCE_DATABASE: medGuard
+    depends_on:
+      - medguard_dp
     networks:
-        - rideshare-net
+      - medGuard-net
+
+  medguard_dp:
+    image: postgres:latest
+    container_name: medguard_dp
+    ports:
+      - "5437:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: medGuard
+    networks:
+      - medGuard-net
 
 networks:
-  rideshare-net:
+  medGuard-net:
     external: true

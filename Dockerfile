@@ -16,10 +16,10 @@ ENV JAVA_HOME=/usr/local/openjdk-17
 WORKDIR /app
 
 # Copy the jar file from the host into the container
-COPY target/RideShare-0.0.1-SNAPSHOT.jar /app/RideShare.jar
+COPY target/MedGuard-0.0.1-SNAPSHOT.jar /app/MedGuard.jar
 
 # Expose the port your application will run on
-EXPOSE 3011
+EXPOSE 3101
 
 # Define the command to run the application
-ENTRYPOINT ["java", "-jar", "/app/RideShare.jar", "mvn spring-boot:run"]
+ENTRYPOINT ["java", "-jar", "/app/MedGuard.jar", "mvn spring-boot:run"]
